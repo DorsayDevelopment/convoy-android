@@ -1,25 +1,35 @@
 package com.dorsaydevelopment.convoy;
 
-import android.os.Bundle;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.parse.ParseUser;
 
-public class MainActivity extends ActionBarActivity {
+
+public class DispatchActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_dispatch);
 
+        if (ParseUser.getCurrentUser() != null) {
+            // User is already logged in -> Go to main activity
+            startActivity(new Intent(this, MainActivity.class));
+        } else {
+            // No user logged in
+            startActivity(new Intent(this, AuthenticationActivity.class));
+        }
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_dispatch, menu);
         return true;
     }
 
