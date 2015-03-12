@@ -1,11 +1,12 @@
 package com.dorsaydevelopment.convoy;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.facebook.AppEventsLogger;
 import com.parse.ParseUser;
 
 
@@ -23,8 +24,22 @@ public class DispatchActivity extends ActionBarActivity {
             // No user logged in
             startActivity(new Intent(this, AuthenticationActivity.class));
         }
+        finish();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Logs 'install' and 'app activate' App Events.
+        AppEventsLogger.activateApp(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Logs 'app deactivate' App Event.
+        AppEventsLogger.deactivateApp(this);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
