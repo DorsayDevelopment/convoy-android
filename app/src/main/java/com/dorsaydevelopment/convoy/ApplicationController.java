@@ -10,6 +10,8 @@ public class ApplicationController extends android.app.Application {
     private static android.app.Application singletonInstance;
 
     public void onCreate() {
+        // Enable Local Datastore.
+        Parse.enableLocalDatastore(this);
         Parse.initialize(this, "kpAPxWNrBwAomp48pDgQNFFXrpzsubCRpblNlLFd", "9On6nF8dkMmsMNnAgQvqwJDYAyF55hDyX4lXbnmv");
     }
 
