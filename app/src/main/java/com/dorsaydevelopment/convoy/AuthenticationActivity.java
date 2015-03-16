@@ -1,6 +1,5 @@
 package com.dorsaydevelopment.convoy;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,13 +15,11 @@ import com.parse.ParseFacebookUtils;
 
 
 public class AuthenticationActivity extends FragmentActivity implements
-        ActionBar.TabListener,
         LoginFragment.OnFragmentInteractionListener,
         RegisterFragment.OnFragmentInteractionListener {
 
     private AuthPagerAdapter authPagerAdapter;
     private ViewPager viewPager;
-    private ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,15 +31,9 @@ public class AuthenticationActivity extends FragmentActivity implements
         viewPager = (ViewPager) findViewById(R.id.auth_pager);
         viewPager.setAdapter(authPagerAdapter);
 
-        actionBar = getActionBar();
-
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
             @Override
             public void onPageSelected(int position) {
-                // on changing the page
-                // make respected tab selected
-//                actionBar.setSelectedNavigationItem(position);
             }
 
             @Override
@@ -53,7 +44,6 @@ public class AuthenticationActivity extends FragmentActivity implements
             public void onPageScrollStateChanged(int arg0) {
             }
         });
-
     }
 
     @Override
@@ -82,21 +72,6 @@ public class AuthenticationActivity extends FragmentActivity implements
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onTabSelected(ActionBar.Tab tab, android.app.FragmentTransaction ft) {
-        viewPager.setCurrentItem(tab.getPosition(), true);
-    }
-
-    @Override
-    public void onTabUnselected(ActionBar.Tab tab, android.app.FragmentTransaction ft) {
-
-    }
-
-    @Override
-    public void onTabReselected(ActionBar.Tab tab, android.app.FragmentTransaction ft) {
-
     }
 
     @Override
