@@ -9,4 +9,10 @@
     <string name="title_activity_login">LoginActivity</string>
 
     <string name="facebook_app_id">800811446624202</string>
+
+    <string name="error_intro">Error Intro</string>
+    <string name="error_blank_username">Invalid Username</string>
+    <string name="error_join">Error Join</string>
+    <string name="error_blank_password">Please enter a password</string>
+    <string name="error_end">Error End</string>
 </resources>
