@@ -53,6 +53,15 @@ public class AuthenticationActivity extends FragmentActivity implements
     }
 
     @Override
+    public void onBackPressed() {
+        if(viewPager.getCurrentItem() != 1) {
+            viewPager.setCurrentItem(1, true);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         ParseFacebookUtils.finishAuthentication(requestCode, resultCode, data);
