@@ -48,6 +48,10 @@ public class AuthenticationActivity extends FragmentActivity implements
         });
     }
 
+    public void switchFragment(int position) {
+        viewPager.setCurrentItem(position);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

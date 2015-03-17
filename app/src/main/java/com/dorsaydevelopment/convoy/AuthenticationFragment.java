@@ -38,14 +38,14 @@ public class AuthenticationFragment extends Fragment {
         ((Button) l.findViewById(R.id.to_login_btn)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                ((AuthenticationActivity) getActivity()).switchFragment(0);
             }
         });
 
         ((Button) l.findViewById(R.id.to_register_button)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                ((AuthenticationActivity) getActivity()).switchFragment(2);
             }
         });
 
