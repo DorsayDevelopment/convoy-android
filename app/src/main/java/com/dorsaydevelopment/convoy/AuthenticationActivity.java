@@ -16,7 +16,8 @@ import com.parse.ParseFacebookUtils;
 
 public class AuthenticationActivity extends FragmentActivity implements
         LoginFragment.OnFragmentInteractionListener,
-        RegisterFragment.OnFragmentInteractionListener {
+        RegisterFragment.OnFragmentInteractionListener,
+        AuthenticationFragment.OnFragmentInteractionListener {
 
     private AuthPagerAdapter authPagerAdapter;
     private ViewPager viewPager;
@@ -30,6 +31,7 @@ public class AuthenticationActivity extends FragmentActivity implements
         authPagerAdapter = new AuthPagerAdapter(fragmentManager);
         viewPager = (ViewPager) findViewById(R.id.auth_pager);
         viewPager.setAdapter(authPagerAdapter);
+        viewPager.setCurrentItem(1);
 
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -90,6 +92,8 @@ public class AuthenticationActivity extends FragmentActivity implements
             if(position == 0) {
                 return new LoginFragment();
             } else if(position == 1) {
+                return new AuthenticationFragment();
+            } else if(position == 2) {
                 return new RegisterFragment();
             }
 
@@ -98,7 +102,7 @@ public class AuthenticationActivity extends FragmentActivity implements
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
     }
 }
