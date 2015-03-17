@@ -1,5 +1,6 @@
 package com.dorsaydevelopment.convoy;
 
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -26,11 +27,13 @@ import com.parse.ParseUser;
  */
 public class LoginFragment extends Fragment {
 
-    private OnFragmentInteractionListener mListener;
+    private OnFragmentInteractionListener listener;
     private UiLifecycleHelper uiHelper;
 
     private EditText usernameText;
     private EditText passwordText;
+
+    private AccountManager accountManager;
 
     public LoginFragment() {}
 
@@ -40,6 +43,8 @@ public class LoginFragment extends Fragment {
 
         uiHelper = new UiLifecycleHelper(getActivity(), null);
         uiHelper.onCreate(savedInstanceState);
+
+        accountManager = AccountManager.get(getActivity().getBaseContext());
     }
 
     @Override
@@ -119,7 +124,7 @@ public class LoginFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            listener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -129,7 +134,7 @@ public class LoginFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        listener = null;
     }
 
     public interface OnFragmentInteractionListener {

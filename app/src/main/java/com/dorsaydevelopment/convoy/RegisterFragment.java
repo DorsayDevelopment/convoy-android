@@ -129,8 +129,6 @@ public class RegisterFragment extends Fragment {
                     getActivity().finish();
                 } else {
                     Log.d("MyApp", "User logged in through Facebook!");
-
-                    // TODO: store account in account manager
                     startActivity(new Intent(getActivity().getApplicationContext(), MainActivity.class));
                     getActivity().finish();
                 }
