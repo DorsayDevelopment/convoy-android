@@ -5,14 +5,19 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.facebook.UiLifecycleHelper;
+import com.parse.LogInCallback;
 import com.parse.ParseException;
+import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
@@ -40,10 +45,25 @@ public class RegisterFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        usernameText = (EditText) getActivity().findViewById(R.id.register_username_text);
-        passwordText = (EditText) getActivity().findViewById(R.id.register_password_text);
+        LinearLayout l = (LinearLayout) inflater.inflate(R.layout.fragment_register, container, false);
+        usernameText = (EditText) l.findViewById(R.id.register_username_text);
+        passwordText = (EditText) l.findViewById(R.id.register_password_text);
 
-        return inflater.inflate(R.layout.fragment_register, container, false);
+        ((Button) l.findViewById(R.id.register_btn)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                register();
+            }
+        });
+
+        ((Button) l.findViewById(R.id.register_facebook_btn)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fbRegister();
+            }
+        });
+
+        return l;
     }
 
     public void register() {
@@ -91,6 +111,28 @@ public class RegisterFragment extends Fragment {
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK |
                             Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
+                }
+            }
+        });
+    }
+
+    private void fbRegister() {
+        ParseFacebookUtils.logIn(getActivity(), new LogInCallback() {
+            @Override
+            public void done(ParseUser user, ParseException err) {
+                if (user == null) {
+                    Log.d("MyApp", "Uh oh. The user cancelled the Facebook login.");
+                } else if (user.isNew()) {
+                    Log.d("MyApp", "User signed up and logged in through Facebook!");
+
+                    startActivity(new Intent(getActivity().getApplicationContext(), MainActivity.class));
+                    getActivity().finish();
+                } else {
+                    Log.d("MyApp", "User logged in through Facebook!");
+
+                    // TODO: store account in account manager
+                    startActivity(new Intent(getActivity().getApplicationContext(), MainActivity.class));
+                    getActivity().finish();
                 }
             }
         });

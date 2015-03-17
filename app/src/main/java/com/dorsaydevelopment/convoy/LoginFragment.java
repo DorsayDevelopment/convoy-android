@@ -46,8 +46,8 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         LinearLayout l = (LinearLayout) inflater.inflate(R.layout.fragment_login, container, false);
-        usernameText = (EditText) getActivity().findViewById(R.id.login_username_text);
-        passwordText = (EditText) getActivity().findViewById(R.id.login_password_text);
+        usernameText = (EditText) l.findViewById(R.id.login_username_text);
+        passwordText = (EditText) l.findViewById(R.id.login_password_text);
 
         ((Button) l.findViewById(R.id.login_btn)).setOnClickListener(new View.OnClickListener() {
             @Override
