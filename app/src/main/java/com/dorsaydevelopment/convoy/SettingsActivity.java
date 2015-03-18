@@ -31,6 +31,7 @@ public class SettingsActivity extends ActionBarActivity {
             addPreferencesFromResource(R.xml.pref_general);
 
             final ParseUser currentUser = ParseUser.getCurrentUser();
+            final String name = currentUser.getString("firstName") + " " + currentUser.getString("lastName");
 
             Preference logoutBtn = (Preference) findPreference("logout_pref_btn");
             logoutBtn.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -54,7 +55,7 @@ public class SettingsActivity extends ActionBarActivity {
                 linkFacebookBtn.setSummary("Connect a Facebook account to " + getResources().getString(R.string.app_name));
             } else {
                 linkFacebookBtn.setTitle("Unlink Facebook account");
-                linkFacebookBtn.setSummary("Currently logged in as " + currentUser.getUsername());
+                linkFacebookBtn.setSummary("Currently logged in as " + name);
             }
 
             linkFacebookBtn.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -67,7 +68,6 @@ public class SettingsActivity extends ActionBarActivity {
                             public void done(ParseException ex) {
                                 if (ParseFacebookUtils.isLinked(currentUser)) {
                                     Log.d("MyApp", "Woohoo, user logged in with Facebook!");
-                                    String name = currentUser.getString("firstName") + " " + currentUser.getString("lastName");
                                     linkFacebookBtn.setTitle("Unlink Facebook account");
                                     linkFacebookBtn.setSummary("Currently logged in as " + name);
                                     Toast.makeText(getActivity().getApplicationContext(), "Successfully linked Facebook account", Toast.LENGTH_SHORT).show();
