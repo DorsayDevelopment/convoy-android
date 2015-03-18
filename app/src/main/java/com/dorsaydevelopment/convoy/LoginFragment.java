@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.facebook.UiLifecycleHelper;
@@ -34,6 +35,8 @@ public class LoginFragment extends Fragment {
     private EditText passwordText;
 
     private AccountManager accountManager;
+
+    private ProgressBar spinner;
 
     public LoginFragment() {}
 
@@ -68,6 +71,9 @@ public class LoginFragment extends Fragment {
             }
         });
 
+        spinner = (ProgressBar) l.findViewById(R.id.login_progress_bar);
+        spinner.setVisibility(View.GONE);
+
         return l;
     }
 
@@ -75,6 +81,8 @@ public class LoginFragment extends Fragment {
 
         final String username = usernameText.getText().toString();
         final String password = passwordText.getText().toString();
+
+        spinner.setVisibility(View.VISIBLE);
 
         ParseUser.logInInBackground(username, password, new LogInCallback() {
             @Override
@@ -92,11 +100,14 @@ public class LoginFragment extends Fragment {
                     startActivity(new Intent(getActivity().getApplicationContext(), MainActivity.class));
                     getActivity().finish();
                 }
+                spinner.setVisibility(View.GONE);
             }
         });
     }
 
     private void fbLogin() {
+        spinner.setVisibility(View.VISIBLE);
+
         ParseFacebookUtils.logIn(getActivity(), new LogInCallback() {
             @Override
             public void done(final ParseUser user, ParseException err) {
@@ -113,6 +124,8 @@ public class LoginFragment extends Fragment {
                     startActivity(new Intent(getActivity().getApplicationContext(), MainActivity.class));
                     getActivity().finish();
                 }
+                spinner.setVisibility(View.GONE);
+
             }
         });
     }

@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.facebook.UiLifecycleHelper;
@@ -31,6 +32,8 @@ public class RegisterFragment extends Fragment {
 
     private EditText usernameText;
     private EditText passwordText;
+
+    private ProgressBar spinner;
 
     public RegisterFragment() {}
 
@@ -63,6 +66,9 @@ public class RegisterFragment extends Fragment {
             }
         });
 
+        spinner = (ProgressBar) l.findViewById(R.id.register_progress_bar);
+        spinner.setVisibility(View.GONE);
+
         return l;
     }
 
@@ -91,7 +97,7 @@ public class RegisterFragment extends Fragment {
             return;
         }
 
-        // TODO: progress dialog
+        spinner.setVisibility(View.VISIBLE);
 
         ParseUser user = new ParseUser();
         user.setUsername(username);
@@ -100,7 +106,6 @@ public class RegisterFragment extends Fragment {
         user.signUpInBackground(new SignUpCallback() {
             @Override
             public void done(ParseException e) {
-                // TODO: Dismiss the progress dialog
                 if (e != null) {
                     // Show the error message
                     Toast.makeText(getActivity().getApplicationContext(), e.getMessage(),
@@ -112,11 +117,14 @@ public class RegisterFragment extends Fragment {
                             Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 }
+                spinner.setVisibility(View.GONE);
             }
         });
     }
 
     private void fbRegister() {
+        spinner.setVisibility(View.VISIBLE);
+
         ParseFacebookUtils.logIn(getActivity(), new LogInCallback() {
             @Override
             public void done(ParseUser user, ParseException err) {
@@ -131,6 +139,7 @@ public class RegisterFragment extends Fragment {
                     startActivity(new Intent(getActivity().getApplicationContext(), MainActivity.class));
                     getActivity().finish();
                 }
+                spinner.setVisibility(View.GONE);
             }
         });
     }
