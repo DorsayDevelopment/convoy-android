@@ -9,7 +9,6 @@ import android.view.MenuItem;
 import com.facebook.AppEventsLogger;
 import com.parse.ParseUser;
 
-
 public class DispatchActivity extends ActionBarActivity {
 
     @Override
