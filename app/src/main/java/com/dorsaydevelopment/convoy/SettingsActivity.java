@@ -1,5 +1,7 @@
 package com.dorsaydevelopment.convoy;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -38,12 +40,22 @@ public class SettingsActivity extends ActionBarActivity {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
 
-                    Log.i("Logout", "Logging out of application");
-                    ParseUser.logOut();
-                    Intent intent = new Intent(getActivity().getApplicationContext(), DispatchActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    getActivity().finish();
+                    new AlertDialog.Builder(getActivity())
+                            .setMessage("Are you sure you want to log out?")
+                            .setCancelable(false)
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    Log.i("Logout", "Logging out of application");
+                                    ParseUser.logOut();
+                                    Intent intent = new Intent(getActivity().getApplicationContext(), DispatchActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(intent);
+                                    getActivity().finish();
+                                }
+                            })
+                            .setNegativeButton("No", null)
+                            .show();
+
                     return true;
                 }
             });
