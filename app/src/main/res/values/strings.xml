@@ -16,4 +16,10 @@
     <string name="error_join">Error Join</string>
     <string name="error_blank_password">Please enter a password</string>
     <string name="error_end">Error End</string>
+
+    <!-- Facebook permissions -->
+    <string-array name="my_facebook_permissions">
+        <item>public_profile</item>
+        <item>user_friends</item>
+    </string-array>
 </resources>
