@@ -15,20 +15,12 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.facebook.HttpMethod;
-import com.facebook.Request;
-import com.facebook.Response;
 import com.facebook.UiLifecycleHelper;
-import com.facebook.model.GraphObject;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseInstallation;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Created by brycen on 15-03-16.
@@ -111,36 +103,13 @@ public class LoginFragment extends Fragment {
                 if (user == null) {
                     Log.d("MyApp", "Uh oh. The user cancelled the Facebook login.");
                 } else if (user.isNew()) {
-                    Log.d("MyApp", "User signed up and logged in through Facebook!");
-
+                    ApplicationController.getInstance().getFacebookInfo();
                     startActivity(new Intent(getActivity().getApplicationContext(), MainActivity.class));
                     getActivity().finish();
                 } else {
-                    // Get first and last name from FB
-                    new Request(
-                        ParseFacebookUtils.getSession(),
-                        "/me",
-                        null,
-                        HttpMethod.GET,
-                        new Request.Callback() {
-                            public void onCompleted(Response response) {
-                                try {
-                                    GraphObject graphObject = response.getGraphObject();
-                                    JSONObject jsonObject = graphObject.getInnerJSONObject();
-                                    user.put("firstName", jsonObject.getString("first_name"));
-                                    user.put("lastName", jsonObject.getString("last_name"));
-                                    user.saveInBackground(new SaveCallback() {
-                                        @Override
-                                        public void done(ParseException e) {
-                                            Log.d("MyApp", "User logged in with Facebook as " + ParseUser.getCurrentUser().get("firstName"));
-                                        }
-                                    });
-                                } catch (JSONException je) {
-                                    Log.e("FBLogin", je.toString());
-                                }
-                            }
-                        }
-                    ).executeAsync();
+                    // Get the user's information from facebook
+                    ApplicationController.getInstance().getFacebookInfo();
+
                     startActivity(new Intent(getActivity().getApplicationContext(), MainActivity.class));
                     getActivity().finish();
                 }

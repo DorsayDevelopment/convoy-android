@@ -107,7 +107,7 @@ public class RegisterFragment extends Fragment {
                             Toast.LENGTH_LONG).show();
                 } else {
                     // Start an intent for the dispatch activity
-                    Intent intent = new Intent(getActivity().getApplicationContext(), DispatchActivity.class);
+                    Intent intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK |
                             Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
@@ -123,12 +123,11 @@ public class RegisterFragment extends Fragment {
                 if (user == null) {
                     Log.d("MyApp", "Uh oh. The user cancelled the Facebook login.");
                 } else if (user.isNew()) {
-                    Log.d("MyApp", "User signed up and logged in through Facebook!");
-
+                    ApplicationController.getInstance().getFacebookInfo();
                     startActivity(new Intent(getActivity().getApplicationContext(), MainActivity.class));
                     getActivity().finish();
                 } else {
-                    Log.d("MyApp", "User logged in through Facebook!");
+                    ApplicationController.getInstance().getFacebookInfo();
                     startActivity(new Intent(getActivity().getApplicationContext(), MainActivity.class));
                     getActivity().finish();
                 }

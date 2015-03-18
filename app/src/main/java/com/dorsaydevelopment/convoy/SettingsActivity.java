@@ -8,17 +8,10 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.facebook.HttpMethod;
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.model.GraphObject;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 
 public class SettingsActivity extends ActionBarActivity {
@@ -74,23 +67,9 @@ public class SettingsActivity extends ActionBarActivity {
                             public void done(ParseException ex) {
                                 if (ParseFacebookUtils.isLinked(currentUser)) {
                                     Log.d("MyApp", "Woohoo, user logged in with Facebook!");
+                                    String name = currentUser.getString("firstName") + " " + currentUser.getString("lastName");
                                     linkFacebookBtn.setTitle("Unlink Facebook account");
-                                    new Request(
-                                        ParseFacebookUtils.getSession(),
-                                        "/me",
-                                        null,
-                                        HttpMethod.GET,
-                                        new Request.Callback() {
-                                            public void onCompleted(Response response) {
-                                                try {
-                                                    GraphObject graphObject = response.getGraphObject();
-                                                    JSONObject jsonObject = graphObject.getInnerJSONObject();
-                                                    String name = jsonObject.getString("first_name") + " " + jsonObject.getString("last_name");
-                                                    linkFacebookBtn.setSummary("Currently logged in as " + name);
-                                                } catch (JSONException je) { Log.e("FBLink", je.toString()); }
-                                            }
-                                        }
-                                    ).executeAsync();
+                                    linkFacebookBtn.setSummary("Currently logged in as " + name);
                                     Toast.makeText(getActivity().getApplicationContext(), "Successfully linked Facebook account", Toast.LENGTH_SHORT).show();
                                 }
                             }
