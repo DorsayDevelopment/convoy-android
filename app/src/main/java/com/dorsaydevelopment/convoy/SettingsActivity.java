@@ -6,8 +6,12 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.parse.ParseException;
+import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 
 public class SettingsActivity extends ActionBarActivity {
@@ -26,8 +30,10 @@ public class SettingsActivity extends ActionBarActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_general);
 
-            Preference logout = (Preference)findPreference("logout_pref_btn");
-            logout.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            final ParseUser currentUser = ParseUser.getCurrentUser();
+
+            Preference logoutBtn = (Preference) findPreference("logout_pref_btn");
+            logoutBtn.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
 
@@ -40,8 +46,48 @@ public class SettingsActivity extends ActionBarActivity {
                     return true;
                 }
             });
+
+            final Preference linkFacebookBtn = (Preference) findPreference("link_facebook_pref_btn");
+            // Check if user has already linked facebook
+            if(!ParseFacebookUtils.isLinked(currentUser)) {
+                linkFacebookBtn.setTitle("Link Facebook account");
+                linkFacebookBtn.setSummary("Connect a Facebook account to " + getResources().getString(R.string.app_name));
+            } else {
+                linkFacebookBtn.setTitle("Unlink Facebook account");
+                linkFacebookBtn.setSummary("Currently logged in as " + currentUser.getUsername());
+            }
+
+            linkFacebookBtn.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    // Check if user has already linked facebook
+                    if (!ParseFacebookUtils.isLinked(currentUser)) {
+                        ParseFacebookUtils.link(currentUser, getActivity(), new SaveCallback() {
+                            @Override
+                            public void done(ParseException ex) {
+                                if (ParseFacebookUtils.isLinked(currentUser)) {
+                                    Log.d("MyApp", "Woohoo, user logged in with Facebook!");
+                                    linkFacebookBtn.setTitle("Unlink Facebook account");
+                                    linkFacebookBtn.setSummary("Currently logged in as " + currentUser.getUsername());
+                                    Toast.makeText(getActivity().getApplicationContext(), "Successfully linked Facebook account", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    } else {
+                        ParseFacebookUtils.unlinkInBackground(currentUser, new SaveCallback() {
+                            @Override
+                            public void done(ParseException ex) {
+                                if (ex == null) {
+                                    Log.d("MyApp", "The user is no longer associated with their Facebook account.");
+                                    linkFacebookBtn.setTitle("Link Facebook account");
+                                    linkFacebookBtn.setSummary("Connect a Facebook account to " + getResources().getString(R.string.app_name));
+                                }
+                            }
+                        });
+                    }
+                    return true;
+                }
+            });
         }
     }
-
-
 }

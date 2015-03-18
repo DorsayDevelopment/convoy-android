@@ -11,6 +11,11 @@
         android:maxLines="1" />
 
     <Preference
+        android:key="link_facebook_pref_btn"
+        android:title="Facebook"
+        android:summary="Connect a Facebook account to Convoy" />
+
+    <Preference
         android:key="logout_pref_btn"
         android:title="Logout"
         android:summary="Log out on this device" />
