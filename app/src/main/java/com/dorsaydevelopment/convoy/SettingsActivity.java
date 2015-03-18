@@ -1,11 +1,11 @@
 package com.dorsaydevelopment.convoy;
 
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
+import android.support.v7.app.ActionBarActivity;
 
 
-public class SettingsActivity extends PreferenceActivity {
+public class SettingsActivity extends ActionBarActivity {
 
     private static final boolean ALWAYS_SIMPLE_PREFS = false;
 
