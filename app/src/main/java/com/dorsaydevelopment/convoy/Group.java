@@ -15,6 +15,14 @@ import java.util.List;
 @ParseClassName("Groups")
 public class Group extends ParseObject {
 
+    public String getGroupName() {
+        return getString("groupName");
+    }
+
+    public void setGroupName(String groupName) {
+        put("groupName", groupName);
+    }
+
     public ParseUser getLeader() {
         return getParseUser("leader");
     }
