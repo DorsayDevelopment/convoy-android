@@ -105,11 +105,14 @@ public class SettingsActivity extends ActionBarActivity {
                         ParseFacebookUtils.link(currentUser, getActivity(), new SaveCallback() {
                             @Override
                             public void done(ParseException ex) {
-                                if (ParseFacebookUtils.isLinked(currentUser)) {
+
+                                if (ex == null) {
                                     Log.d("MyApp", "Woohoo, user logged in with Facebook!");
                                     linkFacebookBtn.setTitle("Unlink Facebook account");
                                     linkFacebookBtn.setSummary("Currently logged in as " + name);
                                     Toast.makeText(getActivity().getApplicationContext(), "Successfully linked Facebook account", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(getActivity().getApplicationContext(), "Facebook account already linked to another Convoy account", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
