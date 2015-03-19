@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.support.v7.app.ActionBarActivity;
@@ -34,6 +35,32 @@ public class SettingsActivity extends ActionBarActivity {
 
             final ParseUser currentUser = ParseUser.getCurrentUser();
             final String name = currentUser.getString("firstName") + " " + currentUser.getString("lastName");
+
+            final EditTextPreference usernameEditText = (EditTextPreference) findPreference("username_pref_edit_text");
+            if(currentUser.getUsername().length() == 25) {
+                usernameEditText.setSummary("Create a username for Convoy. Otherwise your Facebook name will be used");
+            } else {
+                usernameEditText.setSummary(currentUser.getUsername());
+            }
+
+            usernameEditText.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, final Object newValue) {
+                    currentUser.setUsername(newValue.toString());
+                    currentUser.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e != null) {
+                                Toast.makeText(getActivity().getApplicationContext(), "Username is already taken", Toast.LENGTH_SHORT).show();
+                            } else {
+                                usernameEditText.setSummary(newValue.toString());
+                            }
+                        }
+                    });
+
+                    return true;
+                }
+            });
 
             Preference logoutBtn = (Preference) findPreference("logout_pref_btn");
             logoutBtn.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
