@@ -6,6 +6,7 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,8 +44,10 @@ public class Group extends ParseObject {
         return getList("members");
     }
 
-    public void setMembers(List<Group> members) {
-        put("members", members);
+    public void addMember(ParseUser member) {
+        List<ParseUser> list = new ArrayList<ParseUser>();
+        list.add(member);
+        put("members", list);
     }
 
     public List<ParseGeoPoint> getPitStops() {

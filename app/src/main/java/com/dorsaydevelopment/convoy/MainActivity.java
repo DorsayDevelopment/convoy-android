@@ -157,6 +157,7 @@ public class MainActivity extends ActionBarActivity implements SwipeRefreshLayou
                     final Group group = new Group();
                     group.setGroupName(groupName);
                     group.setLeader(currentUser);
+                    group.addMember(currentUser);
                     group.saveInBackground(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
