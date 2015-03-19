@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,10 +18,13 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 
 public class MainActivity extends ActionBarActivity implements SwipeRefreshLayout.OnRefreshListener {
@@ -147,10 +151,25 @@ public class MainActivity extends ActionBarActivity implements SwipeRefreshLayou
             builder.setView(input);
             builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Intent intent = new Intent(getApplicationContext(), GroupActivity.class);
-                    intent.putExtra("group_name", input.getText().toString());
-                    startActivity(intent);
+                public void onClick(final DialogInterface dialog, int which) {
+                    final String groupName = input.getText().toString();
+                    Group group = new Group();
+                    group.setGroupName(groupName);
+                    group.setLeader(currentUser);
+                    group.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if(e == null) {
+                                Intent intent = new Intent(getApplicationContext(), GroupActivity.class);
+                                intent.putExtra("group_name", groupName);
+                                startActivity(intent);
+                            } else {
+                                dialog.cancel();
+                                Toast.makeText(getApplicationContext(), "Error creating group", Toast.LENGTH_SHORT).show();
+                                Log.e("CreateGroup", "Error creating group > " + e.toString());
+                            }
+                        }
+                    });
                 }
             });
             builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
