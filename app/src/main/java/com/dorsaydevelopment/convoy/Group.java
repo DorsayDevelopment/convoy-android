@@ -39,6 +39,14 @@ public class Group extends ParseObject {
         put("members", members);
     }
 
+    public List<ParseGeoPoint> getPitStops() {
+        return getList("pitStops");
+    }
+
+    public void setPitStops(List<ParseGeoPoint> pitStops) {
+        put("pitStops", pitStops);
+    }
+
     public static ParseQuery<Group> getQuery() {
         return ParseQuery.getQuery(Group.class);
     }
