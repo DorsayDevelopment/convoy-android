@@ -9,6 +9,8 @@
     <string name="title_activity_registration">RegistrationActivity</string>
     <string name="title_activity_login">LoginActivity</string>
 
+    <string name="new_group">New Group</string>
+
     <string name="facebook_app_id">800811446624202</string>
 
     <string name="error_intro">Error Intro</string>
@@ -22,4 +24,6 @@
         <item>public_profile</item>
         <item>user_friends</item>
     </string-array>
+    <string name="title_activity_profile">ProfileActivity</string>
+    <string name="title_activity_group">GroupActivity</string>
 </resources>
