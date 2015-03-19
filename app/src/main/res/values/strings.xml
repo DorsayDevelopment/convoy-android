@@ -1,18 +1,22 @@
 <resources>
+    <!-- General strings -->
     <string name="app_name">Convoy</string>
-
     <string name="hello_world">Hello world!</string>
     <string name="app_title">Convoy</string>
-    <string name="action_settings">Settings</string>
+    <string name="group_name">Group name:</string>
+    <string name="group_leader">Group leader:</string>
+
+    <!-- Activity strings -->
     <string name="title_activity_authentication">AuthenticationActivity</string>
     <string name="title_activity_dispatch">DispatchActivity</string>
     <string name="title_activity_registration">RegistrationActivity</string>
     <string name="title_activity_login">LoginActivity</string>
 
+    <!-- Action bar strings -->
+    <string name="action_settings">Settings</string>
     <string name="new_group">New Group</string>
 
-    <string name="facebook_app_id">800811446624202</string>
-
+    <!-- Error message strings -->
     <string name="error_intro">Error Intro</string>
     <string name="error_blank_username">Invalid Username</string>
     <string name="error_join">Error Join</string>
@@ -20,6 +24,7 @@
     <string name="error_end">Error End</string>
 
     <!-- Facebook permissions -->
+    <string name="facebook_app_id">800811446624202</string>
     <string-array name="my_facebook_permissions">
         <item>public_profile</item>
         <item>user_friends</item>

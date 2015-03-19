@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -153,7 +154,7 @@ public class MainActivity extends ActionBarActivity implements SwipeRefreshLayou
                 @Override
                 public void onClick(final DialogInterface dialog, int which) {
                     final String groupName = input.getText().toString();
-                    Group group = new Group();
+                    final Group group = new Group();
                     group.setGroupName(groupName);
                     group.setLeader(currentUser);
                     group.saveInBackground(new SaveCallback() {
@@ -161,7 +162,7 @@ public class MainActivity extends ActionBarActivity implements SwipeRefreshLayou
                         public void done(ParseException e) {
                             if(e == null) {
                                 Intent intent = new Intent(getApplicationContext(), GroupActivity.class);
-                                intent.putExtra("group_name", groupName);
+                                intent.putExtra("object_id", group.getObjectId());
                                 startActivity(intent);
                             } else {
                                 dialog.cancel();
@@ -179,7 +180,9 @@ public class MainActivity extends ActionBarActivity implements SwipeRefreshLayou
                 }
             });
 
-            builder.show();
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
             return true;
         }
 
