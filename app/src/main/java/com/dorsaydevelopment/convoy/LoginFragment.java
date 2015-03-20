@@ -1,6 +1,5 @@
 package com.dorsaydevelopment.convoy;
 
-import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -34,8 +33,6 @@ public class LoginFragment extends Fragment {
     private EditText usernameText;
     private EditText passwordText;
 
-    private AccountManager accountManager;
-
     private ProgressBar spinner;
 
     public LoginFragment() {}
@@ -46,8 +43,6 @@ public class LoginFragment extends Fragment {
 
         uiHelper = new UiLifecycleHelper(getActivity(), null);
         uiHelper.onCreate(savedInstanceState);
-
-        accountManager = AccountManager.get(getActivity().getBaseContext());
     }
 
     @Override

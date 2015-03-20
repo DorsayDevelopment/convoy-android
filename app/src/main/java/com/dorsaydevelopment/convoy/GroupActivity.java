@@ -46,6 +46,7 @@ public class GroupActivity extends ActionBarActivity {
         // Get the group information from the database
         Intent intent = getIntent();
         final String objectId = intent.getStringExtra("object_id");
+
         ParseQuery<Group> query = Group.getQuery();
         query.whereEqualTo("objectId", objectId);
         query.findInBackground(new FindCallback<Group>() {

@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -36,9 +37,7 @@ public class MainActivity extends ActionBarActivity implements SwipeRefreshLayou
     private Handler handler;
     private ParseQueryAdapter adapter;
     private ListView listView;
-
     private boolean isRefreshing;
-
     public Context context;
 
     @Override
@@ -87,7 +86,24 @@ public class MainActivity extends ActionBarActivity implements SwipeRefreshLayou
 
         isRefreshing = false;
 
+        listView.setClickable(true);
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.i("Main", "Group: " + ((Group) adapter.getItem(position)).getGroupName() + " clicked");
+                Intent intent = new Intent(getApplicationContext(), GroupActivity.class);
+                intent.putExtra("object_id", ((Group) adapter.getItem(position)).getObjectId());
+                startActivity(intent);
+            }
+        });
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.i("Main", "Group long pressed");
+                return false;
+            }
+        });
     }
 
     @Override
@@ -123,6 +139,8 @@ public class MainActivity extends ActionBarActivity implements SwipeRefreshLayou
             startActivity(intent);
             finish();
         }
+        populateList();
+
     }
 
     @Override
