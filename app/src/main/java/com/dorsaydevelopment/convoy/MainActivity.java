@@ -105,8 +105,14 @@ public class MainActivity extends ActionBarActivity implements SwipeRefreshLayou
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
+        ParseUser leader = ((Group)adapter.getItem(v.getVerticalScrollbarPosition())).getLeader();
         if (v.getId() == R.id.groups_list) {
-            String[] menuItems = getResources().getStringArray(R.array.group_member_context_menu);
+            String[] menuItems;
+            if(currentUser == leader) {
+                menuItems = getResources().getStringArray(R.array.group_leader_context_menu);
+            } else {
+                menuItems = getResources().getStringArray(R.array.group_member_context_menu);
+            }
             for (int i = 0; i < menuItems.length; i++) {
                 menu.add(Menu.NONE, i, i, menuItems[i]);
             }
