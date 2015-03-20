@@ -67,6 +67,7 @@ public class MainActivity extends ActionBarActivity implements SwipeRefreshLayou
             @Override
             public ParseQuery<Group> create() {
                 ParseQuery<Group> query = Group.getQuery();
+                query.include("members");
                 query.whereEqualTo("members", ParseUser.getCurrentUser());
                 return query;
             }
@@ -78,7 +79,7 @@ public class MainActivity extends ActionBarActivity implements SwipeRefreshLayou
                 if(view == null) {
                     view = View.inflate(getContext(), R.layout.group_list_item, null);
                 }
-                TextView groupName = (TextView) findViewById(R.id.group_item_name);
+                TextView groupName = (TextView) view.findViewById(R.id.group_item_name);
                 groupName.setText(group.getGroupName());
                 return view;
             }
