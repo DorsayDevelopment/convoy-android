@@ -47,7 +47,13 @@ public class Group extends ParseObject {
     public void addMember(ParseUser member) {
         List<ParseUser> list = new ArrayList<ParseUser>();
         list.add(member);
-        put("members", list);
+        addAll("members", list);
+    }
+
+    public void removeMember(ParseUser member) {
+        List<ParseUser> list = new ArrayList<ParseUser>();
+        list.add(member);
+        removeAll("members", list);
     }
 
     public List<ParseGeoPoint> getPitStops() {

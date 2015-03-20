@@ -22,6 +22,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.DeleteCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
@@ -88,6 +89,7 @@ public class MainActivity extends ActionBarActivity implements SwipeRefreshLayou
 
         listView.setClickable(true);
         listView.setAdapter(adapter);
+        registerForContextMenu(listView);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -100,7 +102,20 @@ public class MainActivity extends ActionBarActivity implements SwipeRefreshLayou
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.i("Main", "Group long pressed");
+                Group group = ((Group) adapter.getItem(position));
+                ParseUser leader = group.getLeader();
+                if(currentUser.getObjectId().equals(leader.getObjectId())) {
+                    Log.i("Main", "Current user IS the leader of the group that was long pressed");
+                    group.deleteInBackground(new DeleteCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            populateList();
+                        }
+                    });
+                } else {
+                    Log.i("Main", "Current user is NOT the leader of the group that was long pressed");
+                    group.removeMember(currentUser);
+                }
                 return false;
             }
         });
