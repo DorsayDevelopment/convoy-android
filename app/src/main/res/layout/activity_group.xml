@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/group_members_manage"
                 android:layout_weight="60"
-                android:id="@+id/group_manage_members_btn" />
+                android:id="@+id/group_add_members_btn" />
         </TableRow>
 
 

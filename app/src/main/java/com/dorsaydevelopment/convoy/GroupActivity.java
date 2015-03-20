@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
@@ -38,7 +39,7 @@ public class GroupActivity extends ActionBarActivity {
     private Spinner leaderSpinner;
     private ListView membersListView;
     private ParseUser currentUser;
-    private Button manageMembersBtn;
+    private Button addMembersBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +51,9 @@ public class GroupActivity extends ActionBarActivity {
         // Define fields in layout
         leaderSpinner = (Spinner) findViewById(R.id.group_leader_spinner);
         membersListView = (ListView) findViewById(R.id.members_list_view);
-        manageMembersBtn = (Button) findViewById(R.id.group_manage_members_btn);
+        addMembersBtn = (Button) findViewById(R.id.group_add_members_btn);
 
-        manageMembersBtn.setOnClickListener(new View.OnClickListener() {
+        addMembersBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -115,6 +116,9 @@ public class GroupActivity extends ActionBarActivity {
                 }
                 ParseUser user = group.getMembers().get(position);
                 TextView nameView = (TextView) v.findViewById(android.R.id.text1);
+                if(user == group.getLeader()) {
+                    v.setBackgroundColor(Color.YELLOW);
+                }
 
                 if(user.getUsername().length() == 25) {
                     nameView.setText(user.get("firstName") + " " + user.get("lastName"));
