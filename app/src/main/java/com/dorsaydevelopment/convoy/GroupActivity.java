@@ -1,17 +1,19 @@
 package com.dorsaydevelopment.convoy;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -32,17 +34,18 @@ import java.util.List;
 public class GroupActivity extends ActionBarActivity {
 
     private Group group;
-    private EditText groupNameField;
     private Spinner leaderSpinner;
     private ListView membersListView;
+    private ParseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
 
+        currentUser = ParseUser.getCurrentUser();
+
         // Define fields in layout
-        groupNameField = (EditText) findViewById(R.id.group_name_text);
         leaderSpinner = (Spinner) findViewById(R.id.group_leader_spinner);
         membersListView = (ListView) findViewById(R.id.members_list_view);
 
@@ -59,6 +62,7 @@ public class GroupActivity extends ActionBarActivity {
             public void done(List<Group> groups, ParseException e) {
                 if(e == null && groups.size() > 0) {
                     group = groups.get(0);
+                    setTitle(group.getGroupName());
                     populateFields();
                 } else if(e != null) {
                     Log.e("Group", "Error getting group info > " + e.toString());
@@ -71,36 +75,9 @@ public class GroupActivity extends ActionBarActivity {
             }
         });
 
-        // Define listeners
-        groupNameField.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                group.setGroupName(groupNameField.getText().toString());
-                group.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        Toast.makeText(getApplicationContext(), "Group name updated", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        });
     }
 
     private void populateFields() {
-        groupNameField.setText(group.getGroupName());
-        if(ParseUser.getCurrentUser() == group.getLeader())
-            groupNameField.setFocusableInTouchMode(true);
-        else
-            groupNameField.setFocusable(false);
-
         final GroupLeaderAdapter adapter = new GroupLeaderAdapter(this, android.R.layout.simple_spinner_item, group.getMembers());
         leaderSpinner.setAdapter(adapter);
 
@@ -116,9 +93,7 @@ public class GroupActivity extends ActionBarActivity {
                 });
             }
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
 
         ArrayAdapter<ParseUser> membersAdapter = new ArrayAdapter<ParseUser>(this, android.R.layout.simple_list_item_1, group.getMembers());
@@ -142,6 +117,40 @@ public class GroupActivity extends ActionBarActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if(id == R.id.action_edit_group_name) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Edit Group Name");
+            final EditText input = new EditText(this);
+            input.setInputType(InputType.TYPE_CLASS_TEXT);
+            builder.setView(input);
+            builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(final DialogInterface dialog, int which) {
+                    group.setGroupName(input.getText().toString());
+                    group.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if(e == null) {
+                                Toast.makeText(getApplicationContext(), "Group name updated", Toast.LENGTH_SHORT).show();
+                                setTitle(group.getGroupName());
+                            } else {
+                                dialog.cancel();
+                                Toast.makeText(getApplicationContext(), "Error updating group name", Toast.LENGTH_SHORT).show();
+                                Log.e("CreateGroup", "Error updating group name > " + e.toString());
+                            }
+                        }
+                    });
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         }
 
         return super.onOptionsItemSelected(item);

@@ -19,27 +19,6 @@
             android:layout_height="fill_parent"
             android:weightSum="100" >
 
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="40"
-                android:text="@string/group_name" />
-
-            <EditText
-                android:inputType="text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="60"
-                android:id="@+id/group_name_text" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:weightSum="100" >
-
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
