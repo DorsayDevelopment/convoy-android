@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -37,6 +38,7 @@ public class GroupActivity extends ActionBarActivity {
     private Spinner leaderSpinner;
     private ListView membersListView;
     private ParseUser currentUser;
+    private Button manageMembersBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,14 @@ public class GroupActivity extends ActionBarActivity {
         // Define fields in layout
         leaderSpinner = (Spinner) findViewById(R.id.group_leader_spinner);
         membersListView = (ListView) findViewById(R.id.members_list_view);
+        manageMembersBtn = (Button) findViewById(R.id.group_manage_members_btn);
+
+        manageMembersBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         // TODO: Show progress spinner
 
@@ -183,7 +193,7 @@ public class GroupActivity extends ActionBarActivity {
         public View getView(int position, View view, ViewGroup parent) {
             if (view == null) {
                 LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(android.R.layout.simple_dropdown_item_1line, null);
+                view = inflater.inflate(android.R.layout.simple_spinner_item, null);
             }
             ParseUser user = list.get(position);
             TextView nameView = (TextView) view.findViewById(android.R.id.text1);
