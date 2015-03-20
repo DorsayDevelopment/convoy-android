@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="group_leader_context_menu">
+        <item>Delete Group</item>
+    </string-array>
+    <string-array name="group_member_context_menu">
+        <item>Leave Group</item>
+    </string-array>
+</resources>

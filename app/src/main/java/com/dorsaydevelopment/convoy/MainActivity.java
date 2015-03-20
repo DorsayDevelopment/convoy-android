@@ -11,6 +11,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -99,26 +100,46 @@ public class MainActivity extends ActionBarActivity implements SwipeRefreshLayou
                 startActivity(intent);
             }
         });
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Group group = ((Group) adapter.getItem(position));
-                ParseUser leader = group.getLeader();
-                if(currentUser.getObjectId().equals(leader.getObjectId())) {
-                    Log.i("Main", "Current user IS the leader of the group that was long pressed");
-                    group.deleteInBackground(new DeleteCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            populateList();
-                        }
-                    });
-                } else {
-                    Log.i("Main", "Current user is NOT the leader of the group that was long pressed");
-                    group.removeMember(currentUser);
-                }
-                return false;
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        if (v.getId() == R.id.groups_list) {
+            String[] menuItems = getResources().getStringArray(R.array.group_member_context_menu);
+            for (int i = 0; i < menuItems.length; i++) {
+                menu.add(Menu.NONE, i, i, menuItems[i]);
             }
-        });
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        int menuItemIndex = item.getItemId();
+        Group group = ((Group) adapter.getItem(info.position));
+
+        if(menuItemIndex == 0) { // Delete/remove
+            if(currentUser.getObjectId().equals(group.getLeader().getObjectId())) {
+                group.deleteInBackground(new DeleteCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e == null) {
+                            Toast.makeText(getApplicationContext(), "Group deleted", Toast.LENGTH_SHORT).show();
+                            populateList();
+                        } else {
+                            Log.e("Main", e.toString());
+                        }
+                    }
+                });
+            } else {
+                Toast.makeText(getApplicationContext(), "You have left the group", Toast.LENGTH_SHORT).show();
+                group.removeMember(currentUser);
+            }
+            populateList();
+        }
+
+        return super.onContextItemSelected(item);
     }
 
     @Override
