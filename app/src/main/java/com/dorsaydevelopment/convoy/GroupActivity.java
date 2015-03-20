@@ -15,13 +15,16 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.List;
 
@@ -31,6 +34,7 @@ public class GroupActivity extends ActionBarActivity {
     private Group group;
     private EditText groupNameField;
     private Spinner leaderSpinner;
+    private ListView membersListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,7 @@ public class GroupActivity extends ActionBarActivity {
         // Define fields in layout
         groupNameField = (EditText) findViewById(R.id.group_name_text);
         leaderSpinner = (Spinner) findViewById(R.id.group_leader_spinner);
+        membersListView = (ListView) findViewById(R.id.members_list_view);
 
         // TODO: Show progress spinner
 
@@ -78,27 +83,46 @@ public class GroupActivity extends ActionBarActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                group.setGroupName(groupNameField.getText().toString());
+                group.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        Toast.makeText(getApplicationContext(), "Group name updated", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
     }
 
     private void populateFields() {
         groupNameField.setText(group.getGroupName());
+        if(ParseUser.getCurrentUser() == group.getLeader())
+            groupNameField.setFocusableInTouchMode(true);
+        else
+            groupNameField.setFocusable(false);
 
-        leaderSpinner.setAdapter(new GroupLeaderAdapter(this, android.R.layout.simple_spinner_item, group.getMembers()));
+        final GroupLeaderAdapter adapter = new GroupLeaderAdapter(this, android.R.layout.simple_spinner_item, group.getMembers());
+        leaderSpinner.setAdapter(adapter);
 
         leaderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // TODO: Change leader in database
+                group.setLeader(adapter.getItem(position));
+                group.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        Toast.makeText(getApplicationContext(), "Group leader updated", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
+
+        ArrayAdapter<ParseUser> membersAdapter = new ArrayAdapter<ParseUser>(this, android.R.layout.simple_list_item_1, group.getMembers());
+        membersListView.setAdapter(membersAdapter);
     }
 
     @Override
