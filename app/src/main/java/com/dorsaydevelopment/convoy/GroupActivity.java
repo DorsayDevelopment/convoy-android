@@ -96,7 +96,24 @@ public class GroupActivity extends ActionBarActivity {
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-        ArrayAdapter<ParseUser> membersAdapter = new ArrayAdapter<ParseUser>(this, android.R.layout.simple_list_item_1, group.getMembers());
+        ArrayAdapter<ParseUser> membersAdapter = new ArrayAdapter<ParseUser>(this, android.R.layout.simple_list_item_1, group.getMembers()) {
+            @Override
+            public View getView(int position, View v, ViewGroup parent) {
+                if (v == null) {
+                    LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    v = inflater.inflate(android.R.layout.simple_list_item_1, null);
+                }
+                ParseUser user = group.getMembers().get(position);
+                TextView nameView = (TextView) v.findViewById(android.R.id.text1);
+
+                if(user.getUsername().length() == 25) {
+                    nameView.setText(user.get("firstName") + " " + user.get("lastName"));
+                } else {
+                    nameView.setText(user.getUsername());
+                }
+                return v;
+            }
+        };
         membersListView.setAdapter(membersAdapter);
     }
 
