@@ -65,7 +65,9 @@ public class GroupActivity extends ActionBarActivity {
         addMembersBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), AddMemberActivity.class));
+                Intent intent = new Intent(getApplicationContext(), AddMemberActivity.class);
+                intent.putExtra("group_id", groupId);
+                startActivity(intent);
             }
         });
 

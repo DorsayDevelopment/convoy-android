@@ -1,5 +1,6 @@
 package com.dorsaydevelopment.convoy;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
@@ -10,24 +11,36 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.parse.FindCallback;
+import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
+
+import java.util.List;
 
 
 public class AddMemberActivity extends ActionBarActivity {
 
     private ParseQueryAdapter adapter;
     private ListView listView;
+    private String groupId;
+    private Group group;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_member);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        Intent intent = getIntent();
+        groupId = intent.getStringExtra("group_id");
 
         listView = (ListView) findViewById(R.id.search_users_listview);
     }
@@ -90,8 +103,42 @@ public class AddMemberActivity extends ActionBarActivity {
                 return view;
             }
         };
-
+        listView.setClickable(true);
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final ParseUser user = ((ParseUser) adapter.getItem(position));
+                ParseQuery<Group> query = Group.getQuery();
+                query.whereEqualTo("objectId", groupId);
+                query.findInBackground(new FindCallback<Group>() {
+                    @Override
+                    public void done(List<Group> groups, ParseException e) {
+                        if (e == null && groups.size() > 0) {
+                            group = groups.get(0);
+                            group.addMember(user);
+                            group.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    if(e == null) {
+                                        Toast.makeText(getApplicationContext(), user.getUsername() + " added to group", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        } else if (e != null) {
+                            Log.e("Group", "Error getting group info > " + e.toString());
+                            finish();
+                        } else {
+                            Log.e("Group", "No group found that matches id " + groupId);
+                            finish();
+                        }
+                        // TODO: Hide progress spinner
+                    }
+                });
+            }
+        });
     }
 
     @Override
