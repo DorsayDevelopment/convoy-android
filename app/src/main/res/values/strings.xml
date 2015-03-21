@@ -34,6 +34,6 @@
 
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="title_activity_group">GroupActivity</string>
-    <string name="group_members_add">Manage members</string>
+    <string name="group_members_add">Add members</string>
     <string name="title_activity_add_member">AddMemberActivity</string>
 </resources>

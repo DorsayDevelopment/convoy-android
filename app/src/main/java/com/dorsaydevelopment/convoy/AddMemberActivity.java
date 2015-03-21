@@ -29,6 +29,7 @@ public class AddMemberActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_member);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         listView = (ListView) findViewById(R.id.search_users_listview);
     }
@@ -71,7 +72,7 @@ public class AddMemberActivity extends ActionBarActivity {
             @Override
             public ParseQuery<ParseUser> create() {
                 ParseQuery<ParseUser> queryUsername = ParseUser.getQuery();
-                queryUsername.whereEqualTo("username", queryString);
+                queryUsername.whereStartsWith("username", queryString);
                 return queryUsername;
             }
         };

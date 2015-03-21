@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -40,11 +41,19 @@ public class GroupActivity extends ActionBarActivity {
     private ListView membersListView;
     private ParseUser currentUser;
     private Button addMembersBtn;
+    private String groupId;
+    private SharedPreferences preferences;
+
+    private String PACKAGE_NAME = "com.dorsaydevelopment.convoy";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("Lifecycle", "onCreate");
         setContentView(R.layout.activity_group);
+        setTitle("");
+        preferences = this.getSharedPreferences(PACKAGE_NAME, Context.MODE_PRIVATE);
 
         currentUser = ParseUser.getCurrentUser();
 
@@ -64,28 +73,32 @@ public class GroupActivity extends ActionBarActivity {
 
         // Get the group information from the database
         Intent intent = getIntent();
-        final String objectId = intent.getStringExtra("object_id");
+        groupId = intent.getStringExtra("object_id");
+
+        if(groupId == null)
+            groupId = preferences.getString(PACKAGE_NAME + ".groupId", "");
+        else
+            preferences.edit().putString(PACKAGE_NAME + ".groupId", groupId).apply();
 
         ParseQuery<Group> query = Group.getQuery();
-        query.whereEqualTo("objectId", objectId);
+        query.whereEqualTo("objectId", groupId);
         query.findInBackground(new FindCallback<Group>() {
             @Override
             public void done(List<Group> groups, ParseException e) {
-                if(e == null && groups.size() > 0) {
+                if (e == null && groups.size() > 0) {
                     group = groups.get(0);
                     setTitle(group.getGroupName());
                     populateFields();
-                } else if(e != null) {
+                } else if (e != null) {
                     Log.e("Group", "Error getting group info > " + e.toString());
                     finish();
                 } else {
-                    Log.e("Group", "No group found that matches id " + objectId);
+                    Log.e("Group", "No group found that matches id " + groupId);
                     finish();
                 }
                 // TODO: Hide progress spinner
             }
         });
-
     }
 
     private void populateFields() {
