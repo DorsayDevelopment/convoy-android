@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,6 +44,7 @@ public class GroupActivity extends ActionBarActivity {
     private Button addMembersBtn;
     private String groupId;
     private SharedPreferences preferences;
+    private ArrayAdapter<ParseUser> membersAdapter;
 
     private String PACKAGE_NAME = "com.dorsaydevelopment.convoy";
 
@@ -122,7 +124,7 @@ public class GroupActivity extends ActionBarActivity {
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-        ArrayAdapter<ParseUser> membersAdapter = new ArrayAdapter<ParseUser>(this, android.R.layout.simple_list_item_1, group.getMembers()) {
+        membersAdapter = new ArrayAdapter<ParseUser>(this, android.R.layout.simple_list_item_1, group.getMembers()) {
             @Override
             public View getView(int position, View v, ViewGroup parent) {
                 if (v == null) {
@@ -144,6 +146,44 @@ public class GroupActivity extends ActionBarActivity {
             }
         };
         membersListView.setAdapter(membersAdapter);
+        registerForContextMenu(membersListView);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        if (v.getId() == R.id.members_list_view) {
+            String[] menuItems;
+            menuItems = getResources().getStringArray(R.array.group_member_kick);
+            for (int i = 0; i < menuItems.length; i++) {
+                menu.add(Menu.NONE, i, i, menuItems[i]);
+            }
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        int menuItemIndex = item.getItemId();
+        final ParseUser user = ((ParseUser) membersAdapter.getItem(info.position));
+
+        if(menuItemIndex == 0) { // Delete/remove
+            group.removeMember(user);
+            group.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e == null) {
+                        Toast.makeText(getApplicationContext(), user.getUsername() + " kicked from group", Toast.LENGTH_SHORT).show();
+                        membersAdapter.notifyDataSetChanged();
+                    } else {
+                        Log.e("Main", e.toString());
+                    }
+                }
+            });
+        }
+        membersAdapter.notifyDataSetChanged();
+
+        return super.onContextItemSelected(item);
     }
 
     @Override
