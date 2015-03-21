@@ -100,6 +100,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.dorsaydevelopment.convoy.MainActivity" />
         </activity>
+        <activity
+            android:name=".AddMemberActivity"
+            android:label="@string/title_activity_add_member"
+            android:parentActivityName=".GroupActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.dorsaydevelopment.convoy.GroupActivity" />
+        </activity>
     </application>
 
 </manifest>

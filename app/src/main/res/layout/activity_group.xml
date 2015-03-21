@@ -47,7 +47,7 @@
             <Button
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/group_members_manage"
+                android:text="@string/group_members_add"
                 android:layout_weight="60"
                 android:id="@+id/group_add_members_btn" />
         </TableRow>
