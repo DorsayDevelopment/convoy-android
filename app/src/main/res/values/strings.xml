@@ -7,6 +7,8 @@
     <string name="group_leader">Group leader:</string>
     <string name="group_members">Members:</string>
     <string name="edit_group_name">Edit name</string>
+    <string name="activate_group">Activate group</string>
+    <string name="activate">Activate</string>
 
     <!-- Activity strings -->
     <string name="title_activity_authentication">AuthenticationActivity</string>
