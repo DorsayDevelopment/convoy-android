@@ -224,15 +224,15 @@ public class GroupActivity extends ActionBarActivity {
             activateGroupSwitch.setChecked(true);
         }
 
-        membersAdapter = new ArrayAdapter<ParseUser>(this, android.R.layout.simple_list_item_1, group.getMembers()) {
+        membersAdapter = new ArrayAdapter<ParseUser>(this, R.layout.user_list_item, group.getMembers()) {
             @Override
             public View getView(int position, View v, ViewGroup parent) {
                 if (v == null) {
                     LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    v = inflater.inflate(android.R.layout.simple_list_item_1, null);
+                    v = inflater.inflate(R.layout.user_list_item, null);
                 }
                 ParseUser user = group.getMembers().get(position);
-                TextView nameView = (TextView) v.findViewById(android.R.id.text1);
+                TextView nameView = (TextView) v.findViewById(R.id.text_view_user_name);
                 if(user == group.getLeader()) {
                     v.setBackgroundColor(Color.YELLOW);
                 }
