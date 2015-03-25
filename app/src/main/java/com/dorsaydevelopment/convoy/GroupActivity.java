@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
@@ -26,6 +25,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -234,7 +234,8 @@ public class GroupActivity extends ActionBarActivity {
                 ParseUser user = group.getMembers().get(position);
                 TextView nameView = (TextView) v.findViewById(R.id.text_view_user_name);
                 if(user == group.getLeader()) {
-                    v.setBackgroundColor(Color.YELLOW);
+//                    v.setBackgroundColor(Color.YELLOW);
+                    ((ImageView)v.findViewById(R.id.is_group_leader_image)).setImageDrawable(getResources().getDrawable(R.mipmap.ic_leader));
                 }
 
                 if(user.getUsername().length() == 25) {

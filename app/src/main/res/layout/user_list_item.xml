@@ -1,28 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="@dimen/list_item_height"
     android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin">
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:weightSum="100">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/list_item_height"
         android:id="@+id/text_view_user_name"
         android:gravity="center_vertical"
-        android:height="@dimen/list_item_height"/>
+        android:layout_weight="80"/>
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:id="@+id/is_group_leader_image"
-        android:contentDescription="Group Leader" />
+        android:contentDescription="@string/group_leader_content_description"
+        android:gravity="center"
+        android:layout_weight="10"/>
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:id="@+id/is_active_image"
-        android:contentDescription="Active User" />
+        android:contentDescription="@string/active_user_content_description"
+        android:gravity="center_vertical"
+        android:layout_weight="10"/>
 
 
 </LinearLayout>

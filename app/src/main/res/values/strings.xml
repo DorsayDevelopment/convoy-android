@@ -9,6 +9,8 @@
     <string name="edit_group_name">Edit name</string>
     <string name="activate_group">Activate group</string>
     <string name="activate">Activate</string>
+    <string name="group_leader_content_description">Group Leader</string>
+    <string name="active_user_content_description">Active status</string>
 
     <!-- Activity strings -->
     <string name="title_activity_authentication">AuthenticationActivity</string>
