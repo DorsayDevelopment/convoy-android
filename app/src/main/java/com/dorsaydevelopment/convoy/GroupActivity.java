@@ -1,12 +1,16 @@
 package com.dorsaydevelopment.convoy;
 
 import android.app.AlertDialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
 import android.util.Log;
@@ -48,7 +52,9 @@ public class GroupActivity extends ActionBarActivity {
     private String groupId;
     private SharedPreferences preferences;
     private ArrayAdapter<ParseUser> membersAdapter;
+    private NotificationManager mNotificationManager;
 
+    private int ACTIVE_GROUP_NOTIFICATION_ID = 100;
     private String PACKAGE_NAME = "com.dorsaydevelopment.convoy";
 
 
@@ -67,6 +73,7 @@ public class GroupActivity extends ActionBarActivity {
         membersListView = (ListView) findViewById(R.id.members_list_view);
         addMembersBtn = (Button) findViewById(R.id.group_add_members_btn);
         activateGroupSwitch = (Switch) findViewById(R.id.activate_group_switch);
+        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         addMembersBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,6 +157,7 @@ public class GroupActivity extends ActionBarActivity {
                 public void done(ParseException e) {
                     if (e == null) {
                         Toast.makeText(getApplicationContext(), "Group activated", Toast.LENGTH_SHORT).show();
+                        notifyActiveGroup();
                     } else {
                         Log.e("ActivateGroup", e.toString());
                     }
@@ -164,9 +172,32 @@ public class GroupActivity extends ActionBarActivity {
                 @Override
                 public void done(ParseException e) {
                     Toast.makeText(getApplicationContext(), "Group deactivated", Toast.LENGTH_SHORT).show();
+                    mNotificationManager.cancel(ACTIVE_GROUP_NOTIFICATION_ID);
                 }
             });
         }
+    }
+
+    private void notifyActiveGroup() {
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle("Convoy group is active")
+                        .setContentText(group.getGroupName())
+                        .setOngoing(true);
+        // TODO: Change this line to use the map activity. Right now that doesn't exist
+        Intent resultIntent = new Intent(this, GroupActivity.class);
+        resultIntent.putExtra("object_id", group.getObjectId());
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addParentStack(GroupActivity.class);
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        mBuilder.setContentIntent(resultPendingIntent);
+        mNotificationManager.notify(ACTIVE_GROUP_NOTIFICATION_ID, mBuilder.build());
     }
 
     private void populateFields() {
@@ -184,8 +215,10 @@ public class GroupActivity extends ActionBarActivity {
                     }
                 });
             }
+
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
         // Group switch state depends on if the current group is the active group
         if(group.getObjectId().equals(preferences.getString(PACKAGE_NAME + ".activeGroup", ""))) {
