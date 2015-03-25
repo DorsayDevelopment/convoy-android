@@ -7,4 +7,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/text_view_user_name" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/is_group_leader_image"
+        android:contentDescription="Group Leader" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/is_active_image"
+        android:contentDescription="Active User" />
+
+
 </LinearLayout>

@@ -215,7 +215,6 @@ public class GroupActivity extends ActionBarActivity {
                     }
                 });
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
