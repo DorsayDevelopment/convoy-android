@@ -80,11 +80,11 @@ public class GroupActivity extends ActionBarActivity {
         activateGroupSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // TODO: deactivate all other groups
                 if(isChecked) {
-                    preferences.edit().putString(PACKAGE_NAME + ".activatedGroup", group.getObjectId()).apply();
+                    // TODO: Improve request efficiency of activating and deactivating groups
+                    updateActiveGroup("activate");
                 } else {
-                    preferences.edit().putString(PACKAGE_NAME + ".activatedGroup", "").apply();
+                    updateActiveGroup("deactivate");
                 }
             }
         });
@@ -121,6 +121,54 @@ public class GroupActivity extends ActionBarActivity {
         });
     }
 
+    private void updateActiveGroup(String mode) {
+        if (mode.equals("activate")) {
+            // Deactivate previously active group
+            String lastActiveGroupId = preferences.getString(PACKAGE_NAME + ".activeGroup", "");
+            ParseQuery<Group> query = Group.getQuery();
+            query.whereEqualTo("objectId", lastActiveGroupId);
+            query.findInBackground(new FindCallback<Group>() {
+                @Override
+                public void done(List<Group> groups, ParseException e) {
+                    if(e == null && groups.size() > 0) {
+                        Log.i("GroupActivate", "Deactivating previously active group");
+                        Group lastActiveGroup = groups.get(0);
+                        lastActiveGroup.removeActiveMember(currentUser);
+                        lastActiveGroup.saveInBackground();
+                    } else if(groups.size() == 0) {
+                        Log.i("GroupActivate", "No previously active group to deactivate");
+                    } else {
+                        Log.e("GroupActivate", "Error deactivating currently active group");
+                    }
+                }
+            });
+            // Activate current group
+            preferences.edit().putString(PACKAGE_NAME + ".activeGroup", group.getObjectId()).apply();
+            group.addActiveMember(currentUser);
+            group.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e == null) {
+                        Toast.makeText(getApplicationContext(), "Group activated", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.e("ActivateGroup", e.toString());
+                    }
+                }
+            });
+        } else {
+            // Update the active group in the shared preferences to save on requests
+            preferences.edit().putString(PACKAGE_NAME + ".activeGroup", "").apply();
+            // Remove the user from the active members list in the current group
+            group.removeActiveMember(currentUser);
+            group.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    Toast.makeText(getApplicationContext(), "Group deactivated", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
     private void populateFields() {
         final GroupLeaderAdapter adapter = new GroupLeaderAdapter(this, android.R.layout.simple_spinner_item, group.getMembers());
         leaderSpinner.setAdapter(adapter);
@@ -132,16 +180,15 @@ public class GroupActivity extends ActionBarActivity {
                 group.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
-                        Toast.makeText(getApplicationContext(), "Group leader updated", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getApplicationContext(), "Group leader updated", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
-        Log.i("Group", "Group id in shared preferences > " + preferences.getString(PACKAGE_NAME + ".activatedGroup", ""));
         // Group switch state depends on if the current group is the active group
-        if(group.getObjectId().equals(preferences.getString(PACKAGE_NAME + ".activatedGroup", ""))) {
+        if(group.getObjectId().equals(preferences.getString(PACKAGE_NAME + ".activeGroup", ""))) {
             activateGroupSwitch.setChecked(true);
         }
 
