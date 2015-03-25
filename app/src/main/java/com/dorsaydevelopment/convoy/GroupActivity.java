@@ -20,9 +20,11 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +42,7 @@ public class GroupActivity extends ActionBarActivity {
     private Group group;
     private Spinner leaderSpinner;
     private ListView membersListView;
+    private Switch activateGroupSwitch;
     private ParseUser currentUser;
     private Button addMembersBtn;
     private String groupId;
@@ -63,6 +66,7 @@ public class GroupActivity extends ActionBarActivity {
         leaderSpinner = (Spinner) findViewById(R.id.group_leader_spinner);
         membersListView = (ListView) findViewById(R.id.members_list_view);
         addMembersBtn = (Button) findViewById(R.id.group_add_members_btn);
+        activateGroupSwitch = (Switch) findViewById(R.id.activate_group_switch);
 
         addMembersBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,6 +74,18 @@ public class GroupActivity extends ActionBarActivity {
                 Intent intent = new Intent(getApplicationContext(), AddMemberActivity.class);
                 intent.putExtra("group_id", groupId);
                 startActivity(intent);
+            }
+        });
+
+        activateGroupSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // TODO: deactivate all other groups
+                if(isChecked) {
+                    preferences.edit().putString(PACKAGE_NAME + ".activatedGroup", group.getObjectId()).apply();
+                } else {
+                    preferences.edit().putString(PACKAGE_NAME + ".activatedGroup", "").apply();
+                }
             }
         });
 
@@ -123,6 +139,11 @@ public class GroupActivity extends ActionBarActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
+        Log.i("Group", "Group id in shared preferences > " + preferences.getString(PACKAGE_NAME + ".activatedGroup", ""));
+        // Group switch state depends on if the current group is the active group
+        if(group.getObjectId().equals(preferences.getString(PACKAGE_NAME + ".activatedGroup", ""))) {
+            activateGroupSwitch.setChecked(true);
+        }
 
         membersAdapter = new ArrayAdapter<ParseUser>(this, android.R.layout.simple_list_item_1, group.getMembers()) {
             @Override
