@@ -16,64 +16,77 @@ import java.util.List;
 @ParseClassName("Groups")
 public class Group extends ParseObject {
 
+    // Parse db class and column names
+    private String ACTIVE_MEMBERS = "activeMembers";
+    private String MEMBERS = "members";
+    private String GROUP_NAME = "groupName";
+    private String LEADER = "leader";
+    private String DESTINATION = "destination";
+    private String PIT_STOPS = "pitStops";
+
+
     public String getGroupName() {
-        return getString("groupName");
+        return getString(GROUP_NAME);
     }
 
     public void setGroupName(String groupName) {
-        put("groupName", groupName);
+        put(GROUP_NAME, groupName);
     }
 
     public ParseUser getLeader() {
-        return getParseUser("leader");
+        return getParseUser(LEADER);
     }
 
     public void setLeader(ParseUser value) {
-        put("leader", value);
+        put(LEADER, value);
     }
 
     public ParseGeoPoint getDestination() {
-        return getParseGeoPoint("destination");
+        return getParseGeoPoint(DESTINATION);
     }
 
     public void setDestination(ParseGeoPoint value) {
-        put("destination", value);
+        put(DESTINATION, value);
     }
 
     public List<ParseUser> getMembers() {
-        return getList("members");
+        return getList(MEMBERS);
     }
 
     public void addMember(ParseUser member) {
         List<ParseUser> list = new ArrayList<ParseUser>();
         list.add(member);
-        addAll("members", list);
+        addAll(MEMBERS, list);
     }
 
     public void removeMember(ParseUser member) {
         List<ParseUser> list = new ArrayList<ParseUser>();
         list.add(member);
-        removeAll("members", list);
+        removeAll(MEMBERS, list);
+    }
+
+    public List<ParseUser> getActiveMembers() {
+        return getList(ACTIVE_MEMBERS);
     }
 
     public void addActiveMember(ParseUser member) {
         List<ParseUser> list = new ArrayList<ParseUser>();
         list.add(member);
-        addAll("activeMembers", list);
+        addAll(ACTIVE_MEMBERS, list);
     }
 
     public void removeActiveMember(ParseUser member) {
         List<ParseUser> list = new ArrayList<ParseUser>();
         list.add(member);
-        removeAll("activeMembers", list);
+        removeAll(ACTIVE_MEMBERS, list);
     }
 
     public List<ParseGeoPoint> getPitStops() {
-        return getList("pitStops");
+        return getList(PIT_STOPS);
     }
 
     public void setPitStops(List<ParseGeoPoint> pitStops) {
-        put("pitStops", pitStops);
+        put(PIT_STOPS, pitStops);
     }
 
     public static ParseQuery<Group> getQuery() {

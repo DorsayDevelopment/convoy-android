@@ -26,7 +26,7 @@
         android:layout_height="match_parent"
         android:id="@+id/is_active_image"
         android:contentDescription="@string/active_user_content_description"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:layout_weight="10"/>
 
 

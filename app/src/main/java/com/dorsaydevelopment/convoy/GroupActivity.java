@@ -233,9 +233,16 @@ public class GroupActivity extends ActionBarActivity {
                 }
                 ParseUser user = group.getMembers().get(position);
                 TextView nameView = (TextView) v.findViewById(R.id.text_view_user_name);
+                // If the user is the leader show the star icon next to the name
                 if(user == group.getLeader()) {
 //                    v.setBackgroundColor(Color.YELLOW);
                     ((ImageView)v.findViewById(R.id.is_group_leader_image)).setImageDrawable(getResources().getDrawable(R.mipmap.ic_leader));
+                }
+                // If the user is active set active status to green else grey
+                if(group.getActiveMembers().contains(user)) {
+                    ((ImageView)v.findViewById(R.id.is_active_image)).setImageDrawable(getResources().getDrawable(R.mipmap.ic_active));
+                } else {
+                    ((ImageView)v.findViewById(R.id.is_active_image)).setImageDrawable(getResources().getDrawable(R.mipmap.ic_inactive));
                 }
 
                 if(user.getUsername().length() == 25) {
