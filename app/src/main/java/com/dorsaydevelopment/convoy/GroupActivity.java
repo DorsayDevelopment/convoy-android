@@ -185,6 +185,7 @@ public class GroupActivity extends ActionBarActivity {
                     if(e == null) {
                         Log.i("activateGroup", "Group deactivated for user and user removed from active members array in group");
                         Toast.makeText(getApplicationContext(), "Group deactivated", Toast.LENGTH_SHORT).show();
+                        mNotificationManager.cancel(ACTIVE_GROUP_NOTIFICATION_ID);
                     } else {
                         Log.e("activateGroup", e.toString());
                     }
