@@ -34,6 +34,7 @@ import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -165,6 +166,8 @@ public class GroupActivity extends ActionBarActivity {
             });
             // Turn on location updates for this group
             ApplicationController.locationHandler.connectClient();
+            // Subscribe to push channel for the group
+            ParsePush.subscribeInBackground(groupId);
         } else {
             // Update the active group in the shared preferences to save on requests
             preferences.edit().putString(PACKAGE_NAME + ".activeGroup", "").apply();
@@ -179,6 +182,8 @@ public class GroupActivity extends ActionBarActivity {
             });
             // Disable location updates
             ApplicationController.locationHandler.disconnectClient();
+            // Unsubscribe to push channel
+            ParsePush.unsubscribeInBackground(groupId);
         }
     }
 
