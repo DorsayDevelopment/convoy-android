@@ -14,6 +14,8 @@ import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListe
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.parse.ParseGeoPoint;
+import com.parse.ParseUser;
 
 /**
  * Created by brycen on 15-03-11.
@@ -61,6 +63,7 @@ public class LocationHandler implements
     public void onConnected(Bundle bundle) {
         Log.i("GoogleApiClient", "Connected. GroupID: " + groupId);
         lastLocation = LocationServices.FusedLocationApi.getLastLocation(client);
+        shareLocation(lastLocation);
         Log.i("GoogleApiClient", "Last location > " + lastLocation);
         LocationServices.FusedLocationApi.requestLocationUpdates(client, locationRequest, this);
     }
@@ -71,10 +74,18 @@ public class LocationHandler implements
     @Override
     public void onLocationChanged(Location location) {
         Log.i("GoogleApiClient", "Location update > " + location + " for group: " + groupId);
+        shareLocation(location);
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Log.e("GoogleClientApi", "Connection failed > " + connectionResult.toString());
+    }
+
+    private void shareLocation(Location location) {
+        ParseGeoPoint geoPoint = new ParseGeoPoint(location.getLatitude(), location.getLongitude());
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        currentUser.put("location", geoPoint);
+        currentUser.saveInBackground();
     }
 }
