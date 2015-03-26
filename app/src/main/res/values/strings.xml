@@ -12,12 +12,6 @@
     <string name="group_leader_content_description">Group Leader</string>
     <string name="active_user_content_description">Active status</string>
 
-    <!-- Activity strings -->
-    <string name="title_activity_authentication">AuthenticationActivity</string>
-    <string name="title_activity_dispatch">DispatchActivity</string>
-    <string name="title_activity_registration">RegistrationActivity</string>
-    <string name="title_activity_login">LoginActivity</string>
-
     <!-- Action bar strings -->
     <string name="action_settings">Settings</string>
     <string name="new_group">New Group</string>
@@ -36,8 +30,17 @@
         <item>user_friends</item>
     </string-array>
 
+    <!-- Parse app IDs -->
+    <string name="parse_app_id">kpAPxWNrBwAomp48pDgQNFFXrpzsubCRpblNlLFd</string>
+    <string name="parse_client_id">9On6nF8dkMmsMNnAgQvqwJDYAyF55hDyX4lXbnmv</string>
+
+    <!-- Activities -->
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="title_activity_group">GroupActivity</string>
     <string name="group_members_add">Add members</string>
     <string name="title_activity_add_member">AddMemberActivity</string>
+    <string name="title_activity_authentication">AuthenticationActivity</string>
+    <string name="title_activity_dispatch">DispatchActivity</string>
+    <string name="title_activity_registration">RegistrationActivity</string>
+    <string name="title_activity_login">LoginActivity</string>
 </resources>

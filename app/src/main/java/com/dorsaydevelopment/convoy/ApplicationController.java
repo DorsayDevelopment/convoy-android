@@ -22,12 +22,16 @@ import org.json.JSONObject;
 public class ApplicationController extends android.app.Application {
 
     private static ApplicationController singletonInstance;
+    public static LocationHandler locationHandler;
 
     public void onCreate() {
         // Enable Local Datastore.
         Parse.enableLocalDatastore(this);
         Parse.initialize(this, "kpAPxWNrBwAomp48pDgQNFFXrpzsubCRpblNlLFd", "9On6nF8dkMmsMNnAgQvqwJDYAyF55hDyX4lXbnmv");
         ParseObject.registerSubclass(Group.class);
+
+        // Location handler singleton
+        locationHandler = new LocationHandler(getApplicationContext());
 
         singletonInstance = this;
     }

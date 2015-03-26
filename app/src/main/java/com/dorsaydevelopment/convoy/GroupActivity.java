@@ -163,6 +163,8 @@ public class GroupActivity extends ActionBarActivity {
                     }
                 }
             });
+            // Turn on location updates for this group
+            ApplicationController.locationHandler.connectClient();
         } else {
             // Update the active group in the shared preferences to save on requests
             preferences.edit().putString(PACKAGE_NAME + ".activeGroup", "").apply();
@@ -175,6 +177,8 @@ public class GroupActivity extends ActionBarActivity {
                     mNotificationManager.cancel(ACTIVE_GROUP_NOTIFICATION_ID);
                 }
             });
+            // Disable location updates
+            ApplicationController.locationHandler.disconnectClient();
         }
     }
 
