@@ -33,12 +33,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
+import com.parse.FunctionCallback;
+import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -131,59 +134,62 @@ public class GroupActivity extends ActionBarActivity {
 
     private void updateActiveGroup(String mode) {
         if (mode.equals("activate")) {
-            // Deactivate previously active group
-            String lastActiveGroupId = preferences.getString(PACKAGE_NAME + ".activeGroup", "");
-            ParseQuery<Group> query = Group.getQuery();
-            query.whereEqualTo("objectId", lastActiveGroupId);
-            query.findInBackground(new FindCallback<Group>() {
-                @Override
-                public void done(List<Group> groups, ParseException e) {
-                    if(e == null && groups.size() > 0) {
-                        Log.i("GroupActivate", "Deactivating previously active group");
-                        Group lastActiveGroup = groups.get(0);
-                        lastActiveGroup.removeActiveMember(currentUser);
-                        lastActiveGroup.saveInBackground();
-                    } else if(groups.size() == 0) {
-                        Log.i("GroupActivate", "No previously active group to deactivate");
-                    } else {
-                        Log.e("GroupActivate", "Error deactivating currently active group");
-                    }
-                }
-            });
             // Activate current group
             preferences.edit().putString(PACKAGE_NAME + ".activeGroup", group.getObjectId()).apply();
-            group.addActiveMember(currentUser);
-            group.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if (e == null) {
-                        Toast.makeText(getApplicationContext(), "Group activated", Toast.LENGTH_SHORT).show();
-                        notifyActiveGroup();
-                    } else {
-                        Log.e("ActivateGroup", e.toString());
-                    }
-                }
-            });
             // Turn on location updates for this group
             ApplicationController.locationHandler.connectClient();
             // Subscribe to push channel for the group
-            ParsePush.subscribeInBackground(groupId);
+            ParsePush.subscribeInBackground("a" + groupId, new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    Log.i("Subscribe", "Subscribed to channel > " + "a" + groupId);
+                }
+            });
+            // Request to server to handle activation/deactivation
+            HashMap<String, Object> params = new HashMap<String, Object>();
+            params.put("groupId", groupId);
+            params.put("userId", currentUser.getObjectId());
+            params.put("activate", true);
+            ParseCloud.callFunctionInBackground("activateGroup", params, new FunctionCallback<Object>() {
+                @Override
+                public void done(Object o, ParseException e) {
+                    if(e == null) {
+                        Log.i("activateGroup", "Group activated for user and user added to active members array in group");
+                        Toast.makeText(getApplicationContext(), "Group activated", Toast.LENGTH_SHORT).show();
+                        notifyActiveGroup();
+                    } else {
+                        Log.e("activateGroup", e.toString());
+                    }
+                }
+            });
         } else {
             // Update the active group in the shared preferences to save on requests
             preferences.edit().putString(PACKAGE_NAME + ".activeGroup", "").apply();
-            // Remove the user from the active members list in the current group
-            group.removeActiveMember(currentUser);
-            group.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    Toast.makeText(getApplicationContext(), "Group deactivated", Toast.LENGTH_SHORT).show();
-                    mNotificationManager.cancel(ACTIVE_GROUP_NOTIFICATION_ID);
-                }
-            });
             // Disable location updates
             ApplicationController.locationHandler.disconnectClient();
-            // Unsubscribe to push channel
-            ParsePush.unsubscribeInBackground(groupId);
+            // Unsubscribe from push channel
+            ParsePush.unsubscribeInBackground("a" + groupId, new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    Log.i("Unsubscribe", "Unsubcscribed from channel >" + "a" + groupId);
+                }
+            });
+            // Request to server to handle group deactivation
+            HashMap<String, Object> params = new HashMap<String, Object>();
+            params.put("groupId", groupId);
+            params.put("userId", currentUser.getObjectId());
+            params.put("activate", false); // false means deactivate
+            ParseCloud.callFunctionInBackground("activateGroup", params, new FunctionCallback<Object>() {
+                @Override
+                public void done(Object o, ParseException e) {
+                    if(e == null) {
+                        Log.i("activateGroup", "Group deactivated for user and user removed from active members array in group");
+                        Toast.makeText(getApplicationContext(), "Group deactivated", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.e("activateGroup", e.toString());
+                    }
+                }
+            });
         }
     }
 
