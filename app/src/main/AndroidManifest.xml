@@ -52,6 +52,12 @@
 
         <service android:name="com.parse.PushService" />
 
+        <receiver android:name=".ParseDataReceiver">
+            <intent-filter>
+                <action android:name="com.dorsaydevelopment.convoy.RECEIVE_PUSH_DATA" />
+            </intent-filter>
+        </receiver>
+
         <receiver android:name="com.parse.ParseBroadcastReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
