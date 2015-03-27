@@ -29,7 +29,7 @@ public class ApplicationController extends android.app.Application {
         // Enable Local Datastore.
         Parse.enableLocalDatastore(this);
         ParseCrashReporting.enable(this);
-        Parse.initialize(this, "kpAPxWNrBwAomp48pDgQNFFXrpzsubCRpblNlLFd", "9On6nF8dkMmsMNnAgQvqwJDYAyF55hDyX4lXbnmv");
+        Parse.initialize(this, getString(R.string.parse_app_id), getString(R.string.parse_client_id));
         ParseObject.registerSubclass(Group.class);
 
         // Location handler singleton
