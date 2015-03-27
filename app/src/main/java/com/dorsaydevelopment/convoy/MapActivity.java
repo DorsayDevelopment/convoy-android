@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -16,7 +17,6 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class MapActivity extends ActionBarActivity implements OnMapReadyCallback {
 
-    private GoogleMap map;
     private Location lastLocation;
 
     @Override
@@ -54,7 +54,17 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         lastLocation = ApplicationController.locationHandler.getLastLocation();
+        double lat = lastLocation.getLatitude();
+        double lon = lastLocation.getLongitude();
         LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+
+        // TODO: Set onLongClickLister for dropping new pins for pit stops and save to database
+        googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+                Toast.makeText(getApplicationContext(), "New pitstop", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         googleMap.setMyLocationEnabled(true);
 
