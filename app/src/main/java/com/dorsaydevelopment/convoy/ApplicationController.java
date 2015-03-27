@@ -7,6 +7,7 @@ import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.model.GraphObject;
 import com.parse.Parse;
+import com.parse.ParseCrashReporting;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseObject;
@@ -27,12 +28,12 @@ public class ApplicationController extends android.app.Application {
     public void onCreate() {
         // Enable Local Datastore.
         Parse.enableLocalDatastore(this);
+        ParseCrashReporting.enable(this);
         Parse.initialize(this, "kpAPxWNrBwAomp48pDgQNFFXrpzsubCRpblNlLFd", "9On6nF8dkMmsMNnAgQvqwJDYAyF55hDyX4lXbnmv");
         ParseObject.registerSubclass(Group.class);
 
         // Location handler singleton
         locationHandler = new LocationHandler(getApplicationContext());
-
         singletonInstance = this;
     }
 
