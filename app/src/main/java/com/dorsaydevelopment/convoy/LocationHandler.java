@@ -23,11 +23,11 @@ import com.parse.ParseUser;
 public class LocationHandler implements
         ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
 
-    GoogleApiClient client;
-    Location lastLocation;
-    LocationRequest locationRequest;
-    String groupId;
-    SharedPreferences preferences;
+    private GoogleApiClient client;
+    private Location lastLocation;
+    private LocationRequest locationRequest;
+    private String groupId;
+    private SharedPreferences preferences;
 
     private String PACKAGE_NAME = "com.dorsaydevelopment.convoy";
     private int LOCATION_REQUEST_INTERVAL = 10 * 1000;
@@ -46,6 +46,10 @@ public class LocationHandler implements
                 .setFastestInterval(FASTEST_LOCATION_REQUEST_INTERVAL);
 
         preferences = context.getSharedPreferences(PACKAGE_NAME, Context.MODE_PRIVATE);
+    }
+
+    public Location getLastLocation() {
+        return lastLocation;
     }
 
     public void connectClient() {

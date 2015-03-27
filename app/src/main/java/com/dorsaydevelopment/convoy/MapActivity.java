@@ -1,26 +1,43 @@
 package com.dorsaydevelopment.convoy;
 
+import android.location.Location;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
 
 
 public class MapActivity extends ActionBarActivity {
+
+    private GoogleMap map;
+    private Location lastLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new Map())
-                    .commit();
-        }
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        SupportMapFragment supportMapFragment = (SupportMapFragment) fragmentManager.findFragmentById(R.id.map);
+        map = supportMapFragment.getMap();
+
+        lastLocation = ApplicationController.locationHandler.getLastLocation();
+        double latitude = lastLocation.getLatitude();
+        double longitude = lastLocation.getLongitude();
+        LatLng latLng = new LatLng(latitude, longitude);
+
+        CameraUpdate center = CameraUpdateFactory.newLatLng(latLng);
+        CameraUpdate zoom= CameraUpdateFactory.zoomTo(15);
+
+        map.moveCamera(center);
+        map.animateCamera(zoom);
     }
 
     @Override
@@ -43,22 +60,5 @@ public class MapActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class Map extends Fragment {
-
-        public Map() {
-
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_map, container, false);
-            return rootView;
-        }
     }
 }
