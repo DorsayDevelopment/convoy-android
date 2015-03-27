@@ -7,6 +7,10 @@
         android:icon="@mipmap/ic_action_edit" android:orderInCategory="100"
         app:showAsAction="ifRoom|withText" />
 
+    <item android:id="@+id/action_view_on_map" android:title="@string/view_on_map"
+        android:icon="@mipmap/ic_action_map" android:orderInCategory="100"
+        app:showAsAction="ifRoom|withText" />
+
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
 </menu>

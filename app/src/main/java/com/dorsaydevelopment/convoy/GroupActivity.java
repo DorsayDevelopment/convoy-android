@@ -361,6 +361,8 @@ public class GroupActivity extends ActionBarActivity {
             AlertDialog dialog = builder.create();
             dialog.show();
             dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        } else if(id == R.id.action_view_on_map) {
+            startActivity(new Intent(this, MapActivity.class));
         }
 
         return super.onOptionsItemSelected(item);
