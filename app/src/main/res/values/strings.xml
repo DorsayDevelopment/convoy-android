@@ -23,7 +23,7 @@
     <string name="error_blank_password">Please enter a password</string>
     <string name="error_end">Error End</string>
 
-    <!-- Facebook permissions -->
+    <!-- Facebook app ID -->
     <string name="facebook_app_id">800811446624202</string>
     <string-array name="my_facebook_permissions">
         <item>public_profile</item>
@@ -33,6 +33,9 @@
     <!-- Parse app IDs -->
     <string name="parse_app_id">kpAPxWNrBwAomp48pDgQNFFXrpzsubCRpblNlLFd</string>
     <string name="parse_client_id">9On6nF8dkMmsMNnAgQvqwJDYAyF55hDyX4lXbnmv</string>
+
+    <!-- Maps API Key -->
+    <string name="maps_api_key">AIzaSyChm9xuLbXyrmstyaFn9dkdIpsUiBIn0ns</string>
 
     <!-- Activities -->
     <string name="title_activity_profile">ProfileActivity</string>
