@@ -2,7 +2,6 @@ package com.dorsaydevelopment.convoy;
 
 import android.location.Location;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,11 +9,12 @@ import android.view.MenuItem;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 
 
-public class MapActivity extends ActionBarActivity {
+public class MapActivity extends ActionBarActivity implements OnMapReadyCallback {
 
     private GoogleMap map;
     private Location lastLocation;
@@ -24,20 +24,9 @@ public class MapActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        SupportMapFragment supportMapFragment = (SupportMapFragment) fragmentManager.findFragmentById(R.id.map);
-        map = supportMapFragment.getMap();
-
-        lastLocation = ApplicationController.locationHandler.getLastLocation();
-        double latitude = lastLocation.getLatitude();
-        double longitude = lastLocation.getLongitude();
-        LatLng latLng = new LatLng(latitude, longitude);
-
-        CameraUpdate center = CameraUpdateFactory.newLatLng(latLng);
-        CameraUpdate zoom= CameraUpdateFactory.zoomTo(15);
-
-        map.moveCamera(center);
-        map.animateCamera(zoom);
+        MapFragment mapFragment = (MapFragment) getFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
     }
 
     @Override
@@ -60,5 +49,22 @@ public class MapActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        lastLocation = ApplicationController.locationHandler.getLastLocation();
+        LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+
+        googleMap.setMyLocationEnabled(true);
+
+        CameraUpdate center = CameraUpdateFactory.newLatLngZoom(latLng, 15);
+
+        googleMap.moveCamera(center);
+
+//        googleMap.addMarker(new MarkerOptions()
+//                .title("Sydney")
+//                .snippet("The most populous city in Australia.")
+//                .position(latLng));
     }
 }
