@@ -362,7 +362,10 @@ public class GroupActivity extends ActionBarActivity {
             dialog.show();
             dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         } else if(id == R.id.action_view_on_map) {
-            startActivity(new Intent(this, MapActivity.class));
+            Intent intent = new Intent(this, MapActivity.class);
+            intent.putExtra("groupId", groupId);
+            intent.putExtra("groupName", group.getGroupName());
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);

@@ -82,11 +82,8 @@ public class Group extends ParseObject {
     }
 
     public List<ParseGeoPoint> getPitStops() {
+        // TODO: Get all pitstop objects from the pitstop table
         return getList(PIT_STOPS);
-    }
-
-    public void setPitStops(List<ParseGeoPoint> pitStops) {
-        put(PIT_STOPS, pitStops);
     }
 
     public static ParseQuery<Group> getQuery() {
