@@ -35,6 +35,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
 
     private Location lastLocation;
     private Group group;
+    private String groupId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +43,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_map);
 
         Intent intent = getIntent();
-        final String groupId = intent.getExtras().getString("groupId");
+        groupId = intent.getExtras().getString("groupId");
         final String groupName = intent.getExtras().getString("groupName");
         setTitle(groupName);
 
@@ -53,7 +54,6 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
             public void done(List<Group> groups, ParseException e) {
                 if (e == null && groups.size() > 0) {
                     group = groups.get(0);
-                    populateMap();
                 } else if (e != null) {
                     Log.e("Group", "Error getting group info > " + e.toString());
                     finish();
@@ -64,18 +64,31 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
                 // TODO: Hide progress spinner
             }
         });
-    }
 
-    private void populateMap() {
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+    }
 
-        List<ParseGeoPoint> pitStops = group.getPitStops();
+    private void populateMap(final GoogleMap map) {
 
-//        for(ParseGeoPoint pitStop : pitStops) {
-//
-//        }
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("PitStops");
+        query.whereEqualTo("groupId", groupId);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> parseObjects, ParseException e) {
+                if(e == null) {
+                    for(ParseObject object : parseObjects) {
+                        double latitude = ((ParseGeoPoint)object.get("location")).getLatitude();
+                        double longitude = ((ParseGeoPoint)object.get("location")).getLongitude();
+                        LatLng latLng = new LatLng(latitude, longitude);
+                        map.addMarker(new MarkerOptions()
+                                .position(latLng)
+                                .title((String)object.get("title")));
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -103,11 +116,10 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(final GoogleMap googleMap) {
         lastLocation = ApplicationController.locationHandler.getLastLocation();
-        final double lat = lastLocation.getLatitude();
-        double lon = lastLocation.getLongitude();
         LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
 
-        // TODO: Set onLongClickLister for dropping new pins for pit stops and save to database
+        populateMap(googleMap);
+
         googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
@@ -136,6 +148,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 final String titleResult = titleText.getText().toString();
+                pitStop.put("groupId", groupId);
                 pitStop.put("location", new ParseGeoPoint(location.latitude, location.longitude));
                 pitStop.put("title", titleResult);
                 pitStop.saveInBackground(new SaveCallback() {

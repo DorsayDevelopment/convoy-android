@@ -1,6 +1,8 @@
 package com.dorsaydevelopment.convoy;
 
+import com.parse.FindCallback;
 import com.parse.ParseClassName;
+import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -81,9 +83,12 @@ public class Group extends ParseObject {
         removeAll(ACTIVE_MEMBERS, list);
     }
 
-    public List<ParseGeoPoint> getPitStops() {
+    public static List<ParseObject> getPitStops(String groupId) {
         // TODO: Get all pitstop objects from the pitstop table
-        return getList(PIT_STOPS);
+
+
+
+        return null;
     }
 
     public static ParseQuery<Group> getQuery() {
