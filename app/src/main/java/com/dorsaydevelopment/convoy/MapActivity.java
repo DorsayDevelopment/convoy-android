@@ -20,6 +20,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -28,6 +29,7 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -36,6 +38,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
     private Location lastLocation;
     private Group group;
     private String groupId;
+    private HashMap<String, Marker> pitStopMarkers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,23 +71,27 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        pitStopMarkers = new HashMap<>();
     }
 
     private void populateMap(final GoogleMap map) {
 
+        // Populate the map with pit stops
         ParseQuery<ParseObject> query = ParseQuery.getQuery("PitStops");
         query.whereEqualTo("groupId", groupId);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
-                if(e == null) {
-                    for(ParseObject object : parseObjects) {
-                        double latitude = ((ParseGeoPoint)object.get("location")).getLatitude();
-                        double longitude = ((ParseGeoPoint)object.get("location")).getLongitude();
+                if (e == null) {
+                    for (ParseObject object : parseObjects) {
+                        double latitude = ((ParseGeoPoint) object.get("location")).getLatitude();
+                        double longitude = ((ParseGeoPoint) object.get("location")).getLongitude();
                         LatLng latLng = new LatLng(latitude, longitude);
-                        map.addMarker(new MarkerOptions()
+                        Marker marker = map.addMarker(new MarkerOptions()
                                 .position(latLng)
-                                .title((String)object.get("title")));
+                                .title((String) object.get("title")));
+                        pitStopMarkers.put(object.getObjectId(), marker);
                     }
                 }
             }
@@ -108,9 +115,15 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if(id == R.id.update_map_btn) {
+            moveMarker("NYxI1Rk4Y7", new LatLng(1, 1));
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void moveMarker(String markerId, LatLng newLocation) {
+        pitStopMarkers.get(markerId).setPosition(newLocation);
     }
 
     @Override
