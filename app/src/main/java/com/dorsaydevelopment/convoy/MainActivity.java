@@ -30,6 +30,8 @@ import com.parse.ParseQueryAdapter;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import java.util.ArrayList;
+
 
 public class MainActivity extends ActionBarActivity implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -219,6 +221,7 @@ public class MainActivity extends ActionBarActivity implements SwipeRefreshLayou
                     group.setGroupName(groupName);
                     group.setLeader(currentUser);
                     group.addMember(currentUser);
+                    group.put("activeMembers", new ArrayList<ParseUser>() {});
                     group.saveInBackground(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
