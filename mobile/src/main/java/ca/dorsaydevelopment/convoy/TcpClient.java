@@ -14,10 +14,10 @@ import java.net.Socket;
  * Created by brycen on 2017-04-23.
  */
 
-public class TcpClient {
+class TcpClient {
 
-    public static final String SERVER_IP = "0.tcp.ngrok.io"; //server IP address
-    public static final int SERVER_PORT = 17153;
+    private String serverName;
+    private int serverPort;
     // message to send to the server
     private String mServerMessage;
     // sends message received notifications
@@ -32,7 +32,9 @@ public class TcpClient {
     /**
      * Constructor of the class. OnMessagedReceived listens for the messages received from server
      */
-    public TcpClient(OnMessageReceived listener) {
+    public TcpClient(String server, int port, OnMessageReceived listener) {
+        this.serverName = server;
+        this.serverPort = port;
         mMessageListener = listener;
     }
 
@@ -71,15 +73,13 @@ public class TcpClient {
         mRun = true;
 
         try {
-            //here you must put your computer's IP address.
-            InetAddress serverAddr = InetAddress.getByName(SERVER_IP);
+            InetAddress serverAddr = InetAddress.getByName(serverName);
 
-            Log.e("TCP Client", "C: Connecting...");
+            Log.d("TCP Client", "C: Connecting...");
 
             //create a socket to make the connection with the server
-            Socket socket = new Socket(serverAddr, SERVER_PORT);
 
-            try {
+            try (Socket socket = new Socket(serverAddr, serverPort)) {
 
                 //sends the message to the server
                 mBufferOut = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
@@ -106,11 +106,10 @@ public class TcpClient {
 
                 Log.e("TCP", "S: Error", e);
 
-            } finally {
-                //the socket must be closed. It is not possible to reconnect to this socket
-                // after it is closed, which means a new socket instance has to be created.
-                socket.close();
             }
+            //the socket must be closed. It is not possible to reconnect to this socket
+            // after it is closed, which means a new socket instance has to be created.
+
 
         } catch (Exception e) {
 
@@ -122,7 +121,7 @@ public class TcpClient {
 
     //Declare the interface. The method messageReceived(String message) will must be implemented in the MyActivity
     //class at on asynckTask doInBackground
-    public interface OnMessageReceived {
+    interface OnMessageReceived {
         public void messageReceived(String message);
     }
 
