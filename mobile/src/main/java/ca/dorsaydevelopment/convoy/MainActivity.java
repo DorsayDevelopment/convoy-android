@@ -26,16 +26,16 @@ public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         ActivityCompat.OnRequestPermissionsResultCallback {
 
-    private Button tcpConnect;
-    private Button tcpSend;
-    private Button tcpDisconnect;
+    private Button connect;
+    private Button send;
+    private Button disconnect;
     private Button getLocation;
-    private TcpClient client;
+    private UdpClient client;
     private LinearLayout linearLayout;
     private GoogleApiClient googleApiClient;
     private Location location;
 
-    private static final String SERVERNAME = "192.168.0.190";
+    private static final String SERVERNAME = "192.168.0.120";
     private static final int SERVERPORT = 3000;
 
     @Override
@@ -44,13 +44,13 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 
         linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
-        tcpConnect = (Button) findViewById(R.id.tcpConnect);
-        tcpSend = (Button) findViewById(R.id.tcpSend);
-        tcpDisconnect = (Button) findViewById(R.id.tcpDisconnect);
+        connect = (Button) findViewById(R.id.tcpConnect);
+        send = (Button) findViewById(R.id.tcpSend);
+        disconnect = (Button) findViewById(R.id.tcpDisconnect);
         getLocation = (Button) findViewById(R.id.getLocation);
 
 
-        tcpConnect.setOnClickListener(new View.OnClickListener() {
+        connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("debug", "Connect");
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        tcpSend.setOnClickListener(new View.OnClickListener() {
+        send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String message = "";
@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        tcpDisconnect.setOnClickListener(new View.OnClickListener() {
+        disconnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("debug", "Disconnect");
@@ -133,12 +133,6 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//
-//    }
-
-
 
     @Override
     public void onConnectionSuspended(int i) {
@@ -158,15 +152,9 @@ public class MainActivity extends AppCompatActivity implements
             Snackbar.make(linearLayout, "Connected", Snackbar.LENGTH_SHORT).show();
 
 
-            client = new TcpClient(SERVERNAME, SERVERPORT, new TcpClient.OnMessageReceived() {
-                @Override
-                public void messageReceived(String message) {
-                    Log.d("debug", "Message received: " + message);
-                    Snackbar.make(linearLayout, message, Snackbar.LENGTH_SHORT).show();
-                }
-            });
+            client = new UdpClient();
+            client.connect(SERVERNAME, SERVERPORT);
 
-            client.run();
             Snackbar.make(linearLayout, "Disconnected", Snackbar.LENGTH_SHORT).show();
 
             return null;
@@ -181,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
             if(client != null) {
-                client.sendMessage(message[0]);
+                client.send(message[0]);
             }
 
             return null;
@@ -195,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements
             Log.d("debug", "doInBackground: " + message[0]);
 
             if(client != null) {
-                client.stopClient();
+                client.disconnect();
                 Snackbar.make(linearLayout, "Disconnected", Snackbar.LENGTH_SHORT).show();
             }
 
