@@ -1,6 +1,7 @@
 package ca.dorsaydevelopment.convoy;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -28,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private Button connect;
     private Button send;
-    private Button disconnect;
+    private Button openMap;
     private Button getLocation;
     private UdpClient client;
     private LinearLayout linearLayout;
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements
         linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
         connect = (Button) findViewById(R.id.tcpConnect);
         send = (Button) findViewById(R.id.tcpSend);
-        disconnect = (Button) findViewById(R.id.tcpDisconnect);
+        openMap = (Button) findViewById(R.id.openMap);
         getLocation = (Button) findViewById(R.id.getLocation);
 
 
@@ -75,24 +76,26 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        disconnect.setOnClickListener(new View.OnClickListener() {
+        openMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("debug", "Disconnect");
-                new DisconnectTask().execute("");
+                Log.d("debug", "Open Map");
+                Intent intent = new Intent(v.getContext(), MapActivity.class);
+                startActivity(intent);
+
             }
         });
 
         getLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("debug", "Get Location");
                 getLocation();
                 Snackbar.make(linearLayout, location.getLatitude() + "|" + location.getLongitude(), Snackbar.LENGTH_LONG).show();
             }
         });
 
-        // Create an instance of GoogleAPIClient.
-        if (googleApiClient == null) {
+        if(googleApiClient == null) {
             googleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .build();
@@ -170,21 +173,6 @@ public class MainActivity extends AppCompatActivity implements
 
             if(client != null) {
                 client.send(message[0]);
-            }
-
-            return null;
-        }
-    }
-
-    private class DisconnectTask extends AsyncTask<String, Void, TcpClient> {
-
-        @Override
-        protected TcpClient doInBackground(String... message) {
-            Log.d("debug", "doInBackground: " + message[0]);
-
-            if(client != null) {
-                client.disconnect();
-                Snackbar.make(linearLayout, "Disconnected", Snackbar.LENGTH_SHORT).show();
             }
 
             return null;
