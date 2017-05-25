@@ -1,6 +1,7 @@
 package ca.dorsaydevelopment.convoy;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
@@ -60,8 +61,13 @@ public class MapActivity extends FragmentActivity implements
     }
 
     protected void onStart() {
-        googleApiClient.connect();
         super.onStart();
+        googleApiClient.connect();
+
+        Intent intent = new Intent(this, WebSocketService.class);
+        // TODO: websocket address as config variable
+        intent.putExtra("address", "ws://localhost:3000");
+        startService(intent);
     }
 
     protected void onStop() {
@@ -101,9 +107,6 @@ public class MapActivity extends FragmentActivity implements
         Log.d("debug", "onMapReady()");
         map = googleMap;
 
-        // Add a marker in Sydney and move the camera
-//        LatLng sydney = new LatLng(-34, 151);
-//        map.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
     @Override

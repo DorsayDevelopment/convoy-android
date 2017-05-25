@@ -1,6 +1,7 @@
 package ca.dorsaydevelopment.convoy;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements
     private GoogleApiClient googleApiClient;
     private Location location;
 
-    private static final String SERVERNAME = "192.168.0.120";
+    private static final String SERVERNAME = "192.168.0.190";
     private static final int SERVERPORT = 3000;
 
     @Override
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 Log.d("debug", "Connect");
-                new ConnectTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                new ConnectTask(v.getContext()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
 
@@ -100,8 +101,6 @@ public class MainActivity extends AppCompatActivity implements
                 .addApi(LocationServices.API)
                 .build();
         }
-
-
 
     }
 
@@ -148,6 +147,11 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private class ConnectTask extends AsyncTask<String, Void, TcpClient> {
+        private Context context;
+
+        ConnectTask(Context context) {
+            this.context = context;
+        }
 
         @Override
         protected TcpClient doInBackground(String... params) {
@@ -155,10 +159,12 @@ public class MainActivity extends AppCompatActivity implements
             Snackbar.make(linearLayout, "Connected", Snackbar.LENGTH_SHORT).show();
 
 
-            client = new UdpClient();
-            client.connect(SERVERNAME, SERVERPORT);
+            Intent intent = new Intent(context, WebSocketService.class);
+            // TODO: websocket address as config variable
+            intent.putExtra("address", "ws://192.168.0.190:8000");
+            startService(intent);
 
-            Snackbar.make(linearLayout, "Disconnected", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(linearLayout, "Connected", Snackbar.LENGTH_SHORT).show();
 
             return null;
         }
